@@ -1,0 +1,47 @@
+.homeScreen {
+  padding-top: 70px;
+}
+.homeScreen-container {
+  max-width: 1180px;
+  display: grid;
+  grid-template-columns: 600px 300px;
+  margin: auto;
+  grid-column-gap: 40px;
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+
+    .suggestions-side {
+      display: none;
+    }
+  }
+}
+.posts-side {
+  display: grid;
+  grid-row-gap: 20px;
+}
+.suggestions-side {
+  .sugg-user {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+
+    .sugg-user-info {
+      display: flex;
+      align-items: center;
+
+      .MuiAvatar-root {
+        width: 30px;
+        height: 30px;
+        margin-right: 5px;
+      }
+    }
+
+    .sugg-user-follow-btn {
+      button {
+        color: blue;
+        font-size: 14px !important;
+      }
+    }
+  }
+}

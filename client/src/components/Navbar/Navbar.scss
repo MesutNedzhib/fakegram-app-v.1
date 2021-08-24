@@ -1,0 +1,18 @@
+.navbar {
+  position: fixed;
+  background-color: blueviolet;
+  width: 100%;
+  z-index: 99;
+}
+.navbar-container {
+  //   position: fixed;
+  //   background-color: blueviolet;
+  display: flex;
+}
+.create-post {
+  position: absolute;
+  height: 80px;
+  width: 100%;
+  background-color: brown;
+  top: 0;
+}
