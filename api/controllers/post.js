@@ -22,30 +22,44 @@ const uploadPost = expressAsyncHandler(async (req, res) => {
   const { _userId, _userImageUrl, _username, imageUrl, description } =
     req.body.data;
 
-  const postField = await User.findOne({ _id: _userId });
-  const postModel = new UploadPost({
+  const createPost = await Post.create({
     _userId,
     _userImageUrl,
     _username,
     imageUrl,
     description,
   });
-  const successPostModelCreated = await postModel.save();
-  if (successPostModelCreated) {
-    postField.posts.push(successPostModelCreated);
-    await postField.save();
-    res.status(200).json({
-      success: true,
-      message: "Poste Created",
-      data: postField,
-    });
-  } else {
-    res.status(404).json({
-      success: false,
-      message: "Bad request",
-    });
-  }
+
+  res.status(200).json({
+    success: true,
+    message: "Successfully Created Post",
+  });
+
+  //   const postField = await User.findOne({ _id: _userId });
+  //   const postModel = new UploadPost({
+  //     _userId,
+  //     _userImageUrl,
+  //     _username,
+  //     imageUrl,
+  //     description,
+  //   });
+  //   const successPostModelCreated = await postModel.save();
+  //   if (successPostModelCreated) {
+  //     postField.posts.push(successPostModelCreated);
+  //     await postField.save();
+  //     res.status(200).json({
+  //       success: true,
+  //       message: "Poste Created",
+  //       data: postField,
+  //     });
+  //   } else {
+  //     res.status(404).json({
+  //       success: false,
+  //       message: "Bad request",
+  //     });
+  //   }
 });
+
 const getPosts = expressAsyncHandler(async (req, res) => {
   const { _userId } = req.body.data;
   const userData = await User.findOne({ _id: _userId });
