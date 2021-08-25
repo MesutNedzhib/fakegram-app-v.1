@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const uploadPostModelScheme = new mongoose.Schema(
+const postModelScheme = new mongoose.Schema(
   {
     _userId: { type: String, required: true },
     _userImageUrl: { type: String, required: true },
@@ -27,6 +27,6 @@ const uploadPostModelScheme = new mongoose.Schema(
   }
 );
 
-const UploadPost = mongoose.model("Post", uploadPostModelScheme);
+const Post = mongoose.model("Post", postModelScheme);
 
-module.exports = UploadPost;
+module.exports = Post;

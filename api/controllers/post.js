@@ -1,7 +1,7 @@
 const expressAsyncHandler = require("express-async-handler");
-const UploadPost = require("../models/UploadPostModel");
+const Post = require("../models/PostModel");
 const AddComment = require("../models/AddCommentModel");
-const { post } = require("../routers/user");
+
 const imageFileUpload = expressAsyncHandler(async (req, res) => {
   // res.status(200).json({
   //   message: "success upload",
