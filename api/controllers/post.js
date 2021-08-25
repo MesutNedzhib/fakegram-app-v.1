@@ -30,10 +30,17 @@ const uploadPost = expressAsyncHandler(async (req, res) => {
     description,
   });
 
-  res.status(200).json({
-    success: true,
-    message: "Successfully Created Post",
-  });
+  if (createPost) {
+    res.status(200).json({
+      success: true,
+      message: "Successfully Created Post",
+    });
+  } else {
+    res.status(500).json({
+      success: false,
+      message: "Unsuccessfully Created Post",
+    });
+  }
 
   //   const postField = await User.findOne({ _id: _userId });
   //   const postModel = new UploadPost({
