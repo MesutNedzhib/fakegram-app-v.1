@@ -14,7 +14,7 @@ import { getPosts } from "../../actions/userActions";
 
 function Post({ postData }) {
   const { user } = useSelector((state) => state.user);
-  console.log(postData);
+  // console.log(postData);
 
   const dispatch = useDispatch();
   const [commentValue, setCommentValue] = useState();
