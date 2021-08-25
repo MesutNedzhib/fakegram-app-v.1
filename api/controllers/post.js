@@ -34,6 +34,7 @@ const uploadPost = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Successfully Created Post",
+      data: createPost,
     });
   } else {
     res.status(500).json({
