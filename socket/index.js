@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const io = require("socket.io")(8900, {
   cors: {
     origin: "http://localhost:3000",
@@ -16,19 +17,20 @@ const removeUser = (socketId) => {
 };
 
 io.on("connection", (socket) => {
-  console.log("a user connected");
+  console.log("a user connected", socket.id);
 
-  //send and get message
-    socket.on('sendMEssage',{userId,})
+  // //send and get message
+  // socket.on("sendMEssage", { userId });
 
-  // take userId and socketId from user
-  socket.on("addUser", (userId) => {
-    addUser(userId, socket.id);
-    io.emit("getUsers", users);
-  });
+  // // take userId and socketId from user
+  // socket.on("addUser", (userId) => {
+  //   addUser(userId, socket.id);
+  //   io.emit("getUsers", users);
+  // });
+  
   // when disconnect
   socket.on("disconnect", () => {
-    console.log("a user disconnected");
+    console.log("a user disconnected", socket.id);
     removeUser(socket.id);
   });
 });

@@ -60,7 +60,7 @@ export const imageFileUpload = (formData) => async (dispatch) => {
   });
   try {
     const { data } = await axios.post(
-      "/api/user/image-file-upload",
+      "/api/post/image-file-upload",
       formData,
       config
     );
@@ -81,7 +81,7 @@ export const postUploadByUserId = (postData) => async (dispatch) => {
     type: POST_UPLOAD_BY_USER_ID_REQUEST,
   });
   try {
-    const { data } = await axios.post("/api/user/post-upload-by-user-id", {
+    const { data } = await axios.post("/api/post/upload-post", {
       data: postData,
     });
     console.log(data);
@@ -99,12 +99,14 @@ export const postUploadByUserId = (postData) => async (dispatch) => {
 
 export const getPosts = () => async (dispatch, getState) => {
   const _userId = getState().user.user._id;
+  const following = ["61224da9b4ecfa346c005d74"];
+
   dispatch({
     type: GET_POSTS_REQUEST,
   });
   try {
-    const { data } = await axios.post("/api/user/get-posts", {
-      data: { _userId },
+    const { data } = await axios.post("/api/post/get-posts", {
+      data: { following },
     });
 
     dispatch({

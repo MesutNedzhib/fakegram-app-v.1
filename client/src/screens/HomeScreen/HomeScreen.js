@@ -7,6 +7,7 @@ import { getPosts } from "../../actions/userActions";
 import Post from "../../components/Post/Post";
 import "./HomeScreen.scss";
 import { io } from "socket.io-client";
+import { GET_POSTS_SUCCESS } from "../../constants/userConstants";
 
 function HomeScreen() {
   const socket = useRef();
@@ -14,6 +15,8 @@ function HomeScreen() {
   const { postsLoading, postsError, posts } = useSelector(
     (state) => state.posts
   );
+
+  const flwing = ["61224da9b4ecfa346c005d74"];
   // console.log(posts);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -25,10 +28,25 @@ function HomeScreen() {
 
   useEffect(() => {
     socket.current.emit("addUser", user._id);
-    socket.current.on("getUsers", (users) => {
-      console.log(users);
+    socket.current.on("newPost", (newPost) => {
+      if (flwing.includes(newPost._userId)) {
+        let rr = [];
+        rr.push(newPost);
+
+        posts?.push(newPost);
+
+        posts?.sort((x, y) => {
+          return new Date(y.createdAt) - new Date(x.createdAt);
+        });
+        console.log(posts);
+
+        dispatch({
+          type: GET_POSTS_SUCCESS,
+          payload: posts,
+        });
+      }
     });
-  }, [user]);
+  }, [user, flwing, posts]);
 
   useEffect(() => {
     if (!user) {
