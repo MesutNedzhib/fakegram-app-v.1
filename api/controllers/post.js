@@ -69,24 +69,32 @@ const uploadPost = expressAsyncHandler(async (req, res) => {
 });
 
 const getPosts = expressAsyncHandler(async (req, res) => {
-  const { _userId } = req.body.data;
-  const userData = await User.findOne({ _id: _userId });
-  const followingList = userData.following;
-  followingList.push(_userId);
-  let newBack = [];
+  const { following } = req.body.data;
 
-  if (followingList) {
-    for (let i of followingList) {
-      const listWithPosts = await User.findById({ _id: i });
-      if (listWithPosts) {
-        newBack = newBack.concat(listWithPosts.posts);
-      }
+  let newBack = [];
+  for (let id of following) {
+    const postData = await Post.find({ _userId: id });
+    if (postData) {
+      newBack = newBack.concat(postData);
     }
   }
 
-  newBack.sort((a, b) => {
-    return new Date(b.createdAt) - new Date(a.createdAt);
-  });
+  //   const followingList = userData.following;
+  //   followingList.push(_userId);
+  //   let newBack = [];
+
+  //   if (followingList) {
+  //     for (let i of followingList) {
+  //       const listWithPosts = await User.findById({ _id: i });
+  //       if (listWithPosts) {
+  //         newBack = newBack.concat(listWithPosts.posts);
+  //       }
+  //     }
+  //   }
+
+  //   newBack.sort((a, b) => {
+  //     return new Date(b.createdAt) - new Date(a.createdAt);
+  //   });
 
   res.status(200).json({
     success: true,
