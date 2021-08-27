@@ -152,7 +152,7 @@ export const setLikeToPost = (likeProps) => async (dispatch) => {
     type: SET_LIKE_REQUEST,
   });
   try {
-    const { data } = await axios.post("/api/user/set-like", {
+    const { data } = await axios.post("/api/post/set-like", {
       data: likeProps,
     });
 

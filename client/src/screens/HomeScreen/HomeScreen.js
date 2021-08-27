@@ -27,24 +27,25 @@ function HomeScreen() {
   }, []);
 
   useEffect(() => {
-    socket.current.emit("addUser", user._id);
-    socket.current.on("newPost", (newPost) => {
-      if (flwing.includes(newPost._userId)) {
-        let rr = [];
-        rr.push(newPost);
+    socket.current.emit("addPosts", posts);
+    socket.current.on("newPosts", (newPosts) => {
+      // if (flwing.includes(newPost._userId)) {
+      //   let rr = [];
+      //   rr.push(newPost);
 
-        posts?.push(newPost);
+      //   posts?.push(newPost);
 
-        posts?.sort((x, y) => {
-          return new Date(y.createdAt) - new Date(x.createdAt);
-        });
-        console.log(posts);
+      //   posts?.sort((x, y) => {
+      //     return new Date(y.createdAt) - new Date(x.createdAt);
+      //   });
+      //   console.log(posts);
 
-        dispatch({
-          type: GET_POSTS_SUCCESS,
-          payload: posts,
-        });
-      }
+      dispatch({
+        type: GET_POSTS_SUCCESS,
+        payload: newPosts,
+      });
+      //   // dispatch(getPosts());
+      // }
     });
   }, [user, flwing, posts]);
 

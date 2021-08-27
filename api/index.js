@@ -5,7 +5,7 @@ const routers = require("./routers");
 const cors = require("cors");
 const path = require("path");
 const mongoose = require("mongoose");
-const { MongoClient } = require("mongodb");
+const { MongoClient, ChangeStream } = require("mongodb");
 const io = require("socket.io")(8900, {
   cors: {
     origin: "http://localhost:3000",
@@ -45,6 +45,7 @@ app.listen(PORT, () => {
   console.log(`App Started on PORT ${PORT} : 'http://localhost:${PORT}'`);
 });
 
+let currentPosts = [];
 let users = [];
 
 const connection = mongoose.connection;
@@ -52,7 +53,9 @@ const connection = mongoose.connection;
 connection.once("open", () => {
   console.log("MongoDB database connected");
 
-  const ss = connection.collection("posts").watch();
+  const ss = connection
+    .collection("posts")
+    .watch({ fullDocument: "updateLookup" });
 
   ss.on("change", (change) => {
     switch (change.operationType) {
@@ -68,8 +71,31 @@ connection.once("open", () => {
           imageUrl: change.fullDocument.imageUrl,
           createdAt: change.fullDocument.createdAt,
         };
-        // let rr = connection.collection("posts").find({});
-        io.emit("newPost", newPost);
+
+        currentPosts.push(newPost);
+        currentPosts.sort((x, y) => {
+          return new Date(y.createdAt) - new Date(x.createdAt);
+        });
+
+        io.emit("newPosts", currentPosts);
+        break;
+
+      case "update":
+        const updatedPost = {
+          _id: change.fullDocument._id,
+          _userId: change.fullDocument._userId,
+          _userImageUrl: change.fullDocument._userImageUrl,
+          _username: change.fullDocument._username,
+          likes: change.fullDocument.likes,
+          comments: change.fullDocument.comments,
+          description: change.fullDocument.description,
+          imageUrl: change.fullDocument.imageUrl,
+          createdAt: change.fullDocument.createdAt,
+        };
+
+        let index = currentPosts.findIndex((x) => x._id == updatedPost._id);
+        currentPosts[index] = updatedPost;
+        io.emit("newPosts", currentPosts);
         break;
 
       // case "delete":
@@ -79,9 +105,9 @@ connection.once("open", () => {
   });
 });
 
-const addUser = (userId, socketId) => {
-  !users.some((user) => user.userId === userId) &&
-    users.push({ userId, socketId });
+const addPosts = (posts) => {
+  // !users.some((user) => user.userId === userId) &&
+  //   users.push({ userId, socketId });
 };
 
 const removeUser = (socketId) => {
@@ -91,9 +117,10 @@ const removeUser = (socketId) => {
 io.on("connection", (socket) => {
   console.log("a user connected", socket.id);
 
-  socket.on("addUser", (userId) => {
-    addUser(userId, socket.id);
-
+  socket.on("addPosts", (posts) => {
+    // addPosts(posts);
+    currentPosts = posts;
+    // console.log(posts);
     // io.emit("getUsers", ff);
   });
 
