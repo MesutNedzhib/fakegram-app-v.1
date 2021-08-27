@@ -17,6 +17,9 @@ import {
   SET_COMMENT_SUCCESS,
   SET_LIKE_FAIL,
   SET_LIKE_REQUEST,
+  GET_USER_BY_ID_REQUEST,
+  GET_USER_BY_ID_FAIL,
+  GET_CURRENT_POST_STATE,
 } from "../constants/userConstants";
 import axios from "axios";
 
@@ -34,6 +37,27 @@ export const createUser = (profileObj) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: CREATE_USER_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const getUserById = (_userId) => async (dispatch) => {
+  dispatch({ type: GET_USER_BY_ID_REQUEST });
+  try {
+    const { data } = await axios.post("/api/user/get-user-by-id", {
+      data: { _userId },
+    });
+    if (data) {
+      dispatch({ type: CREATE_USER_SUCCESS, payload: data.data });
+      localStorage.setItem("user", JSON.stringify(data.data));
+    }
+  } catch (error) {
+    dispatch({
+      type: GET_USER_BY_ID_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
@@ -84,11 +108,11 @@ export const postUploadByUserId = (postData) => async (dispatch) => {
     const { data } = await axios.post("/api/post/upload-post", {
       data: postData,
     });
-    console.log(data);
-    dispatch({
-      type: POST_UPLOAD_BY_USER_ID_SUCCESS,
-      payload: data,
-    });
+    // console.log(data);
+    // dispatch({
+    //   type: POST_UPLOAD_BY_USER_ID_SUCCESS,
+    //   payload: data,
+    // });
   } catch (err) {
     dispatch({
       type: POST_UPLOAD_BY_USER_ID_FAIL,
@@ -98,8 +122,8 @@ export const postUploadByUserId = (postData) => async (dispatch) => {
 };
 
 export const getPosts = () => async (dispatch, getState) => {
-  const _userId = getState().user.user._id;
-  const following = ["61224da9b4ecfa346c005d74"];
+  const following = getState().user.user.following;
+  following.push(getState().user.user._id);
 
   dispatch({
     type: GET_POSTS_REQUEST,
@@ -122,26 +146,26 @@ export const getPosts = () => async (dispatch, getState) => {
 };
 
 export const setComment = (commentProps) => async (dispatch, getState) => {
-  let posts = getState().posts.posts;
-  // console.log(posts);
-  const findPost = posts.findIndex((x) => x._id === commentProps._postId);
-  // posts[findPost] = posts[findPost].comments.push({ TEST: "dsa" });
-  const commentsR = posts[findPost]?.comments;
-  commentsR.push(commentProps);
-  posts[findPost].comments = commentsR;
-  // console.log(posts);
+  // let posts = getState().posts.posts;
+  // // console.log(posts);
+  // const findPost = posts.findIndex((x) => x._id === commentProps._postId);
+  // // posts[findPost] = posts[findPost].comments.push({ TEST: "dsa" });
+  // const commentsR = posts[findPost]?.comments;
+  // commentsR.push(commentProps);
+  // posts[findPost].comments = commentsR;
+  // // console.log(posts);
 
   dispatch({
     type: SET_COMMENT_REQUEST,
   });
   try {
-    const { data } = await axios.post("/api/user/set-comment", {
+    const { data } = await axios.post("/api/post/set-comment", {
       data: commentProps,
     });
-    dispatch({
-      type: GET_POSTS_SUCCESS,
-      payload: data.data,
-    });
+    // dispatch({
+    //   type: GET_POSTS_SUCCESS,
+    //   payload: data.data,
+    // });
   } catch (err) {
     dispatch({ type: SET_COMMENT_FAIL, payload: err.message });
   }
@@ -155,10 +179,8 @@ export const setLikeToPost = (likeProps) => async (dispatch) => {
     const { data } = await axios.post("/api/post/set-like", {
       data: likeProps,
     });
-
     dispatch({
-      type: GET_POSTS_SUCCESS,
-      payload: data.data,
+      type: GET_CURRENT_POST_STATE,
     });
   } catch (err) {
     dispatch({ type: SET_LIKE_FAIL, payload: err.message });

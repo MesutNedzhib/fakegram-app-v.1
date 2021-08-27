@@ -14,7 +14,6 @@ import { getPosts } from "../../actions/userActions";
 
 function Post({ postData }) {
   const { user } = useSelector((state) => state.user);
-  // console.log(postData);
 
   const dispatch = useDispatch();
   const [commentValue, setCommentValue] = useState();
@@ -26,7 +25,6 @@ function Post({ postData }) {
         _username: postData._username,
         _userImageUrl: user?.imageUrl,
         comment: commentValue,
-        currentUserId: user?._id,
       })
     );
     setCommentValue("");
@@ -35,7 +33,6 @@ function Post({ postData }) {
     dispatch(
       setLikeToPost({
         _postId: postData._id,
-        _userId: postData._userId,
         currentUserId: user?._id,
       })
     );

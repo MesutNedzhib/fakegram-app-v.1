@@ -3,7 +3,7 @@ import Button from "@material-ui/core/Button";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { getPosts } from "../../actions/userActions";
+import { getPosts, getUserById } from "../../actions/userActions";
 import Post from "../../components/Post/Post";
 import "./HomeScreen.scss";
 import { io } from "socket.io-client";
@@ -16,7 +16,6 @@ function HomeScreen() {
     (state) => state.posts
   );
 
-  const flwing = ["61224da9b4ecfa346c005d74"];
   // console.log(posts);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -29,31 +28,22 @@ function HomeScreen() {
   useEffect(() => {
     socket.current.emit("addPosts", posts);
     socket.current.on("newPosts", (newPosts) => {
-      // if (flwing.includes(newPost._userId)) {
-      //   let rr = [];
-      //   rr.push(newPost);
-
-      //   posts?.push(newPost);
-
-      //   posts?.sort((x, y) => {
-      //     return new Date(y.createdAt) - new Date(x.createdAt);
-      //   });
-      //   console.log(posts);
-
       dispatch({
         type: GET_POSTS_SUCCESS,
         payload: newPosts,
       });
-      //   // dispatch(getPosts());
-      // }
     });
-  }, [user, flwing, posts]);
+  }, [posts, dispatch]);
+
+  // useEffect(() => {
+
+  // }, [dispatch]);
 
   useEffect(() => {
     if (!user) {
       history.push("/");
     }
-
+    // dispatch(getUserById(user._id));
     dispatch(getPosts());
   }, [user, history, dispatch]);
 

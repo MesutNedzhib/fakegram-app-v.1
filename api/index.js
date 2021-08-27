@@ -39,8 +39,6 @@ app.get("/", (req, res) => {
   res.send("Server is ready");
 });
 
-let coll;
-
 app.listen(PORT, () => {
   console.log(`App Started on PORT ${PORT} : 'http://localhost:${PORT}'`);
 });
@@ -78,6 +76,7 @@ connection.once("open", () => {
         });
 
         io.emit("newPosts", currentPosts);
+
         break;
 
       case "update":
@@ -95,7 +94,9 @@ connection.once("open", () => {
 
         let index = currentPosts.findIndex((x) => x._id == updatedPost._id);
         currentPosts[index] = updatedPost;
+
         io.emit("newPosts", currentPosts);
+
         break;
 
       // case "delete":
@@ -104,11 +105,6 @@ connection.once("open", () => {
     }
   });
 });
-
-const addPosts = (posts) => {
-  // !users.some((user) => user.userId === userId) &&
-  //   users.push({ userId, socketId });
-};
 
 const removeUser = (socketId) => {
   users = users.filter((user) => user.socketId !== socketId);
@@ -119,7 +115,9 @@ io.on("connection", (socket) => {
 
   socket.on("addPosts", (posts) => {
     // addPosts(posts);
+
     currentPosts = posts;
+
     // console.log(posts);
     // io.emit("getUsers", ff);
   });

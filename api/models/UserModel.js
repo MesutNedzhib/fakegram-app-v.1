@@ -16,10 +16,6 @@ const userScheme = new mongoose.Schema(
       type: String,
       required: true,
     },
-    posts: {
-      type: Array,
-      default: [],
-    },
     followers: {
       type: Array,
       default: [],

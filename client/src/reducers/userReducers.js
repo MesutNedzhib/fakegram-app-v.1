@@ -6,6 +6,7 @@ import {
   GET_POSTS_SUCCESS,
   GET_POSTS_FAIL,
   USER_LOGOUT,
+  GET_CURRENT_POST_STATE,
 } from "../constants/userConstants";
 
 export const userReducer = (state = { user: null }, action) => {
@@ -31,6 +32,8 @@ export const postsReducer = (state = { posts: null }, action) => {
       return { postsLoading: false, posts: action.payload };
     case GET_POSTS_FAIL:
       return { postsLoading: false, postsError: action.payload };
+    case GET_CURRENT_POST_STATE:
+      return { postsLoading: false, posts: state.posts };
 
     default:
       return state;

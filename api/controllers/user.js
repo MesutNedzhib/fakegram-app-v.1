@@ -38,8 +38,22 @@ const createUser = expressAsyncHandler(async (req, res) => {
   }
 });
 
-
+const getUserById = expressAsyncHandler(async (req, res) => {
+  const { _userId } = req.body.data;
+  const user = await User.findById({ _id: _userId });
+  if (user) {
+    res.status(200).json({
+      message: "Get User By Id - Success",
+      data: user,
+    });
+  } else {
+    res.status(400).json({
+      message: "Get User By Id - Fail",
+    });
+  }
+});
 
 module.exports = {
   createUser,
+  getUserById,
 };
