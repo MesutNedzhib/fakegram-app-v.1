@@ -102,63 +102,81 @@ const getPosts = expressAsyncHandler(async (req, res) => {
     data: newBack,
   });
 });
-const addComment = expressAsyncHandler(async (req, res) => {
+const setComment = expressAsyncHandler(async (req, res) => {
   const { _postId, _userId, _username, _userImageUrl, comment, currentUserId } =
     req.body.data;
 
-  const handlePost = await User.findOne({ _id: _userId });
-  let findAndUpdate = handlePost.posts.find((elem) => elem._id == _postId);
-  findAndUpdate.comments.push({
-    _userId,
-    _username,
-    _userImageUrl,
-    comment,
-  });
-
-  await User.findByIdAndUpdate(
-    { _id: _userId },
+  const handlePost = await Post.findByIdAndUpdate(
+    { _id: _postId },
     {
-      posts: handlePost.posts,
+      $push: {
+        comments: {
+          _userId,
+          _username,
+          _userImageUrl,
+          comment,
+        },
+      },
     }
   );
 
-  // ---------------------------------------
-  const userData = await User.findOne({ _id: currentUserId });
-  const followingList = userData.following;
+  await handlePost.save();
 
-  followingList.push(currentUserId);
-  let newBack = [];
+  // const handlePost = await User.findOne({ _id: _userId });
+  // let findAndUpdate = handlePost.posts.find((elem) => elem._id == _postId);
+  // findAndUpdate.comments.push({
+  //   _userId,
+  //   _username,
+  //   _userImageUrl,
+  //   comment,
+  // });
 
-  if (followingList) {
-    for (let i of followingList) {
-      const listWithPosts = await User.findById({ _id: i });
-      if (listWithPosts) {
-        newBack = newBack.concat(listWithPosts.posts);
-      }
-    }
-  }
+  // await User.findByIdAndUpdate(
+  //   { _id: _userId },
+  //   {
+  //     posts: handlePost.posts,
+  //   }
+  // );
 
-  newBack.sort((a, b) => {
-    return new Date(b.createdAt) - new Date(a.createdAt);
-  });
+  // // ---------------------------------------
+  // const userData = await User.findOne({ _id: currentUserId });
+  // const followingList = userData.following;
+
+  // followingList.push(currentUserId);
+  // let newBack = [];
+
+  // if (followingList) {
+  //   for (let i of followingList) {
+  //     const listWithPosts = await User.findById({ _id: i });
+  //     if (listWithPosts) {
+  //       newBack = newBack.concat(listWithPosts.posts);
+  //     }
+  //   }
+  // }
+
+  // newBack.sort((a, b) => {
+  //   return new Date(b.createdAt) - new Date(a.createdAt);
+  // });
 
   res.status(200).json({
     success: true,
-    message: "GET POSTS",
-    data: newBack,
+    message: "GET Comments",
+    data: handlePost,
   });
 });
 
 const setLikeToPost = expressAsyncHandler(async (req, res) => {
   const { _postId, currentUserId } = req.body.data;
-  const handlePost = await Post.findByIdAndUpdate(
-    { _id: _postId },
-    {
-      $push: { likes: currentUserId },
-    }
-  );
+  const handlePost = await Post.findOne({ _id: _postId });
+
+  if (!handlePost.likes.includes(currentUserId)) {
+    handlePost.likes.push(currentUserId);
+  } else {
+    handlePost.likes.splice(handlePost.likes.indexOf(currentUserId), 1);
+  }
 
   await handlePost.save();
+
   // let findAndUpdate = handlePost.posts.find((elem) => elem._id == _postId);
 
   // if (!findAndUpdate.likes.includes(currentUserId)) {
@@ -204,6 +222,6 @@ module.exports = {
   imageFileUpload,
   uploadPost,
   getPosts,
-  addComment,
+  setComment,
   setLikeToPost,
 };
