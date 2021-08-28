@@ -5,7 +5,6 @@ const routers = require("./routers");
 const cors = require("cors");
 const path = require("path");
 const mongoose = require("mongoose");
-const { MongoClient, ChangeStream } = require("mongodb");
 const io = require("socket.io")(8900, {
   cors: {
     origin: "http://localhost:3000",
@@ -18,12 +17,7 @@ dotenv.config({
   path: "./config/env/config.env",
 });
 
-// connectDatabase();
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-});
+connectDatabase();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -49,8 +43,6 @@ let users = [];
 const connection = mongoose.connection;
 
 connection.once("open", () => {
-  console.log("MongoDB database connected");
-
   const ss = connection
     .collection("posts")
     .watch({ fullDocument: "updateLookup" });
