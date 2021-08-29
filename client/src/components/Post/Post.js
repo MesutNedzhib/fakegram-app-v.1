@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./Post.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { setComment, setLikeToPost } from "../../actions/userActions";
-
+import * as timeago from "timeago.js";
 import Badge from "@material-ui/core/Badge";
 import Button from "@material-ui/core/Button";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
@@ -77,7 +77,7 @@ function Post({ postData }) {
             ))}
           </div>
           <div className="post-timestamp">
-            <span>{postData.createdAt}</span>
+            <span>{timeago.format(postData.createdAt)}</span>
           </div>
           <div className="post-add-comment">
             <div className="post-add-comment-write">
