@@ -53,7 +53,29 @@ const getUserById = expressAsyncHandler(async (req, res) => {
   }
 });
 
+const getUsers = expressAsyncHandler(async (req, res) => {
+  const users = await User.find({});
+
+  const backUsers = [];
+
+  if (users) {
+    for (let i = 0; i < 3; i++) {
+      const randomIndex = Math.floor(Math.random() * users.length);
+      if (backUsers.includes(users[randomIndex])) {
+      } else {
+        backUsers.push(users[randomIndex]);
+      }
+    }
+  }
+
+  res.status(200).json({
+    message: "Get Random Users - Success",
+    data: backUsers,
+  });
+});
+
 module.exports = {
   createUser,
   getUserById,
+  getUsers,
 };
