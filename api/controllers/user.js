@@ -74,8 +74,52 @@ const getUsers = expressAsyncHandler(async (req, res) => {
   });
 });
 
+const setFollow = expressAsyncHandler(async (req, res) => {
+  const { _userId, _currentUserId } = req.body.data;
+  const handleFollowing = await User.findOne({ _id: _userId });
+
+  if (!handleFollowing.following.includes(_currentUserId)) {
+    handleFollowing.following.push(_currentUserId);
+  } else {
+    handleFollowing.following.splice(
+      handleFollowing.following.indexOf(_currentUserId),
+      1
+    );
+  }
+
+  await handleFollowing.save();
+
+  res.status(200).json({
+    message: "Set Following - Success",
+    data: handleFollowing,
+  });
+});
+
+const setUnfollow = expressAsyncHandler(async (req, res) => {
+  const { _userId, _currentUserId } = req.body.data;
+  const handleFollowing = await User.findOne({ _id: _userId });
+
+  if (!handleFollowing.following.includes(_currentUserId)) {
+    handleFollowing.following.push(_currentUserId);
+  } else {
+    handleFollowing.following.splice(
+      handleFollowing.following.indexOf(_currentUserId),
+      1
+    );
+  }
+
+  await handleFollowing.save();
+
+  res.status(200).json({
+    message: "Set Unfollow - Success",
+    data: handleFollowing,
+  });
+});
+
 module.exports = {
   createUser,
   getUserById,
   getUsers,
+  setFollow,
+  setUnfollow
 };
