@@ -18,6 +18,10 @@
   position: relative;
   text-align: center;
 
+  @media (max-width: 480px) {
+    width: 90%;
+  }
+
   button {
     margin-top: 20px;
     width: 80%;
