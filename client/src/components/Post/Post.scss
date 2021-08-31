@@ -52,6 +52,21 @@
 
   .post-comments {
     padding: 5px 10px;
+    overflow: hidden;
+    overflow-y: auto;
+    max-height: 110px;
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: gray;
+      border-radius: 10px;
+    }
+    .user-comment-conrainer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
     .user-comment {
       display: flex;
       align-items: center;
@@ -71,7 +86,7 @@
   .post-timestamp {
     padding: 5px 10px;
     padding-bottom: 10px;
-    padding-top: 0;
+    padding-top: 5px;
     small {
       color: gray;
     }

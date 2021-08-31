@@ -103,7 +103,8 @@ const getPosts = expressAsyncHandler(async (req, res) => {
   });
 });
 const setCommentToPost = expressAsyncHandler(async (req, res) => {
-  const { _postId, _userId, _username, _userImageUrl, comment } = req.body.data;
+  const { _postId, _userId, _username, _userImageUrl, comment, createdAt } =
+    req.body.data;
 
   const handlePost = await Post.findByIdAndUpdate(
     { _id: _postId },
@@ -114,6 +115,7 @@ const setCommentToPost = expressAsyncHandler(async (req, res) => {
           _username,
           _userImageUrl,
           comment,
+          createdAt,
         },
       },
     }

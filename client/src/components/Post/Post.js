@@ -17,16 +17,19 @@ function Post({ postData }) {
   const dispatch = useDispatch();
   const [commentValue, setCommentValue] = useState();
   const setCommentDataHandle = () => {
-    dispatch(
-      setComment({
-        _postId: postData._id,
-        _userId: postData._userId,
-        _username: postData._username,
-        _userImageUrl: user?.imageUrl,
-        comment: commentValue,
-      })
-    );
-    setCommentValue("");
+    if (commentValue.length !== 0) {
+      dispatch(
+        setComment({
+          _postId: postData._id,
+          _userId: postData._userId,
+          _username: postData._username,
+          _userImageUrl: user?.imageUrl,
+          createdAt: new Date(),
+          comment: commentValue,
+        })
+      );
+      setCommentValue("");
+    }
   };
   const setLikeToPostHandle = () => {
     dispatch(
@@ -87,12 +90,17 @@ function Post({ postData }) {
           </div>
           <div className="post-comments">
             {postData.comments.map((item, index) => (
-              <div className="user-comment" key={index}>
-                <Avatar src={item?._userImageUrl} />
-                <p>
-                  <h4>{item._username}</h4>
-                  {item.comment}
-                </p>
+              <div key={index} className="user-comment-conrainer">
+                <div className="user-comment">
+                  <Avatar src={item?._userImageUrl} />
+                  <p>
+                    <h4>{item._username}</h4>
+                    {item.comment}
+                  </p>
+                </div>
+                <div className="user-cooment-timestamp">
+                  <small>{timeago.format(item?.createdAt)}</small>
+                </div>
               </div>
             ))}
           </div>

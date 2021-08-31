@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./CreatePost.scss";
 import { useDispatch, useSelector } from "react-redux";
 import CloseIcon from "@material-ui/icons/Close";
@@ -11,6 +11,16 @@ import { Button } from "@material-ui/core";
 function CreatePost({ setCreatePost }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
+  // const { postUploadLoading, uploadedPostError, uploadedPost } = useSelector(
+  //   (state) => state.uploadedPost
+  // );
+
+  // useEffect(() => {
+  //   if (uploadedPost) {
+  //     setCreatePost(false);
+  //   }
+  // }, [uploadedPost]);
+
   const [imageSrc, setImageSrc] = useState();
   const [fileState, setFileState] = useState();
   const [description, setDescription] = useState();
@@ -31,6 +41,8 @@ function CreatePost({ setCreatePost }) {
     data.imageUrl = fileState.name;
     data.description = description;
     dispatch(postUploadByUserId(data));
+
+    // setCreatePost(false);
   };
   return (
     <div className="createPost">

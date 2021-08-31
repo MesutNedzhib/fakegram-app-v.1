@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Navbar.scss";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { userLogout } from "../../actions/userActions";
 import CreatePost from "../CreatePost/CreatePost";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
@@ -8,9 +8,18 @@ import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
 function Navbar() {
   const dispatch = useDispatch();
   const [createPostState, setCreatePostState] = useState(false);
+  const { postUploadLoading, uploadedPostError, uploadedPost } = useSelector(
+    (state) => state.uploadedPost
+  );
   const logout = () => {
     dispatch(userLogout());
   };
+
+  useEffect(() => {
+    if (uploadedPost) {
+      setCreatePostState(false);
+    }
+  }, [uploadedPost]);
   return (
     <div className="navbar">
       <div className="navbar-container">

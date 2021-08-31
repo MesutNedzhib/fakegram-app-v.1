@@ -4,8 +4,9 @@ import {
   GET_POSTS_FAIL,
   GET_POSTS_REQUEST,
   GET_POSTS_SUCCESS,
-  POST_UPLOAD_BY_USER_ID_FAIL,
-  POST_UPLOAD_BY_USER_ID_REQUEST,
+  POST_UPLOAD_FAIL,
+  POST_UPLOAD_REQUEST,
+  POST_UPLOAD_SUCCESS,
   SET_COMMENT_FAIL,
   SET_COMMENT_REQUEST,
   SET_LIKE_FAIL,
@@ -14,20 +15,20 @@ import {
 
 export const postUploadByUserId = (postData) => async (dispatch) => {
   dispatch({
-    type: POST_UPLOAD_BY_USER_ID_REQUEST,
+    type: POST_UPLOAD_REQUEST,
   });
   try {
     const { data } = await axios.post("/api/post/upload-post", {
       data: postData,
     });
-    // console.log(data);
-    // dispatch({
-    //   type: POST_UPLOAD_BY_USER_ID_SUCCESS,
-    //   payload: data,
-    // });
+
+    dispatch({
+      type: POST_UPLOAD_SUCCESS,
+      payload: data.data,
+    });
   } catch (err) {
     dispatch({
-      type: POST_UPLOAD_BY_USER_ID_FAIL,
+      type: POST_UPLOAD_FAIL,
       payload: err.message,
     });
   }
