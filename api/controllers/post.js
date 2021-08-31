@@ -1,6 +1,5 @@
 const expressAsyncHandler = require("express-async-handler");
 const Post = require("../models/PostModel");
-const AddComment = require("../models/AddCommentModel");
 
 const imageFileUpload = expressAsyncHandler(async (req, res) => {
   // res.status(200).json({
