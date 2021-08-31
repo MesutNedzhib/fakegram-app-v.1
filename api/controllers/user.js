@@ -54,16 +54,22 @@ const getUserById = expressAsyncHandler(async (req, res) => {
 });
 
 const getUsers = expressAsyncHandler(async (req, res) => {
+  const { _userId } = req.body.data;
+
   const users = await User.find({});
+
+  const withoutCurrentIdArray = users.filter((x) => x._id != _userId);
 
   const backUsers = [];
 
   if (users) {
-    for (let i = 0; i < 3; i++) {
-      const randomIndex = Math.floor(Math.random() * users.length);
-      if (backUsers.includes(users[randomIndex])) {
+    for (let i = 0; i < withoutCurrentIdArray.length; i++) {
+      const randomIndex = Math.floor(
+        Math.random() * withoutCurrentIdArray.length
+      );
+      if (backUsers.includes(withoutCurrentIdArray[randomIndex])) {
       } else {
-        backUsers.push(users[randomIndex]);
+        backUsers.push(withoutCurrentIdArray[randomIndex]);
       }
     }
   }
@@ -78,11 +84,11 @@ const setFollow = expressAsyncHandler(async (req, res) => {
   const { _userId, _currentUserId } = req.body.data;
   const handleFollowing = await User.findOne({ _id: _userId });
 
-  if (!handleFollowing.following.includes(_currentUserId)) {
-    handleFollowing.following.push(_currentUserId);
+  if (!handleFollowing.followers.includes(_currentUserId)) {
+    handleFollowing.followers.push(_currentUserId);
   } else {
-    handleFollowing.following.splice(
-      handleFollowing.following.indexOf(_currentUserId),
+    handleFollowing.followers.splice(
+      handleFollowing.followers.indexOf(_currentUserId),
       1
     );
   }
@@ -121,5 +127,5 @@ module.exports = {
   getUserById,
   getUsers,
   setFollow,
-  setUnfollow
+  setUnfollow,
 };

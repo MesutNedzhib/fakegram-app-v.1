@@ -10,7 +10,7 @@ const {
 const router = express.Router();
 
 router.post("/create-user", createUser);
-router.get("/get-users", getUsers);
+router.post("/get-users", getUsers);
 router.post("/get-user-by-id", getUserById);
 router.post("/set-follow", setFollow);
 router.post("/set-unfollow", setUnfollow);

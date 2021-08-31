@@ -38,16 +38,16 @@ app.listen(PORT, () => {
 });
 
 let currentPosts = [];
-let users = [];
+let currentSuggUsers = [];
 
 const connection = mongoose.connection;
 
 connection.once("open", () => {
-  const ss = connection
+  const postCollection = connection
     .collection("posts")
     .watch({ fullDocument: "updateLookup" });
 
-  ss.on("change", (change) => {
+  postCollection.on("change", (change) => {
     switch (change.operationType) {
       case "insert":
         const newPost = {
@@ -90,32 +90,70 @@ connection.once("open", () => {
         io.emit("newPosts", currentPosts);
 
         break;
+    }
+  });
 
-      // case "delete":
-      //   io.of("/api/socket").emit("deletedThought", change.documentKey._id);
+  const usersCollection = connection
+    .collection("users")
+    .watch({ fullDocument: "updateLookup" });
+
+  usersCollection.on("change", (change) => {
+    switch (change.operationType) {
+      // case "insert":
+      //   const newPost = {
+      //     _id: change.fullDocument._id,
+      //     _userId: change.fullDocument._userId,
+      //     _userImageUrl: change.fullDocument._userImageUrl,
+      //     _username: change.fullDocument._username,
+      //     likes: change.fullDocument.likes,
+      //     comments: change.fullDocument.comments,
+      //     description: change.fullDocument.description,
+      //     imageUrl: change.fullDocument.imageUrl,
+      //     createdAt: change.fullDocument.createdAt,
+      //   };
+
+      //   currentPosts.push(newPost);
+      //   currentPosts.sort((x, y) => {
+      //     return new Date(y.createdAt) - new Date(x.createdAt);
+      //   });
+
+      //   io.emit("newPosts", currentPosts);
+
       //   break;
+
+      case "update":
+        const updatedUser = {
+          _id: change.fullDocument._id,
+          followers: change.fullDocument.followers,
+          following: change.fullDocument.following,
+          name: change.fullDocument.name,
+          email: change.fullDocument.email,
+          imageUrl: change.fullDocument.imageUrl,
+          createdAt: change.fullDocument.createdAt,
+        };
+
+        let index = currentSuggUsers.findIndex((x) => x._id == updatedUser._id);
+        currentSuggUsers[index] = updatedUser;
+
+        io.emit("newSuggUsers", currentSuggUsers);
+
+        break;
     }
   });
 });
-
-const removeUser = (socketId) => {
-  users = users.filter((user) => user.socketId !== socketId);
-};
 
 io.on("connection", (socket) => {
   console.log("a user connected", socket.id);
 
   socket.on("addPosts", (posts) => {
-    // addPosts(posts);
-
     currentPosts = posts;
+  });
 
-    // console.log(posts);
-    // io.emit("getUsers", ff);
+  socket.on("addSuggUsers", (users) => {
+    currentSuggUsers = users;
   });
 
   socket.on("disconnect", () => {
     console.log("a user disconnected", socket.id);
-    removeUser(socket.id);
   });
 });

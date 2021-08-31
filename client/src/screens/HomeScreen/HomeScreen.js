@@ -3,15 +3,26 @@ import Button from "@material-ui/core/Button";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { getPosts, getUserById } from "../../actions/userActions";
+import {
+  getPosts,
+  getRandomSuggUsers,
+  getUserById,
+  setFollow,
+} from "../../actions/userActions";
 import Post from "../../components/Post/Post";
 import "./HomeScreen.scss";
 import { io } from "socket.io-client";
-import { GET_POSTS_SUCCESS } from "../../constants/userConstants";
+import {
+  GET_POSTS_SUCCESS,
+  GET_RANDOM_USERS_SUCCESS,
+} from "../../constants/userConstants";
 
 function HomeScreen() {
   const socket = useRef();
   const { loading, error, user } = useSelector((state) => state.user);
+  const { suggUsersLoading, suggUsersError, suggUsers } = useSelector(
+    (state) => state.suggUsers
+  );
   const { postsLoading, postsError, posts } = useSelector(
     (state) => state.posts
   );
@@ -20,6 +31,10 @@ function HomeScreen() {
   const history = useHistory();
   const dispatch = useDispatch();
   // console.log(socket);
+
+  useEffect(() => {
+    dispatch(getRandomSuggUsers(user._id));
+  }, [dispatch, user._id]);
 
   useEffect(() => {
     socket.current = io("ws://localhost:8900");
@@ -35,9 +50,15 @@ function HomeScreen() {
     });
   }, [posts, dispatch]);
 
-  // useEffect(() => {
-
-  // }, [dispatch]);
+  useEffect(() => {
+    socket.current.emit("addSuggUsers", suggUsers);
+    socket.current.on("newSuggUsers", (newSuggUsers) => {
+      dispatch({
+        type: GET_RANDOM_USERS_SUCCESS,
+        payload: newSuggUsers,
+      });
+    });
+  }, [suggUsers, dispatch]);
 
   useEffect(() => {
     if (!user) {
@@ -56,33 +77,45 @@ function HomeScreen() {
           ))}
         </div>
         <div className="suggestions-side">
-          <div className="sugg-user">
-            <div className="sugg-user-info">
-              <Avatar />
-              <h4>Username</h4>
+          {suggUsers?.map((item, index) => (
+            <div key={index} className="sugg-user">
+              <div className="sugg-user-info">
+                <Avatar src={item.imageUrl} />
+                <h4>{item.name}</h4>
+              </div>
+              {item?.followers.includes(user._id) ? (
+                <div className="sugg-user-follow-btn">
+                  <Button
+                    onClick={() =>
+                      dispatch(
+                        setFollow({
+                          _userId: item._id,
+                          _currentUserId: user._id,
+                        })
+                      )
+                    }
+                  >
+                    Unfollow
+                  </Button>
+                </div>
+              ) : (
+                <div className="sugg-user-follow-btn">
+                  <Button
+                    onClick={() =>
+                      dispatch(
+                        setFollow({
+                          _userId: item._id,
+                          _currentUserId: user._id,
+                        })
+                      )
+                    }
+                  >
+                    Follow
+                  </Button>
+                </div>
+              )}
             </div>
-            <div className="sugg-user-follow-btn">
-              <Button>Follow</Button>
-            </div>
-          </div>
-          <div className="sugg-user">
-            <div className="sugg-user-info">
-              <Avatar />
-              <h4>Username</h4>
-            </div>
-            <div className="sugg-user-follow-btn">
-              <Button>Follow</Button>
-            </div>
-          </div>
-          <div className="sugg-user">
-            <div className="sugg-user-info">
-              <Avatar />
-              <h4>Username</h4>
-            </div>
-            <div className="sugg-user-follow-btn">
-              <Button>Follow</Button>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>

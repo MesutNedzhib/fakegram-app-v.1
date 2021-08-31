@@ -7,6 +7,10 @@ import {
   GET_POSTS_FAIL,
   USER_LOGOUT,
   GET_CURRENT_POST_STATE,
+  SET_FOLLOW_REQUEST,
+  GET_RANDOM_USERS_REQUEST,
+  GET_RANDOM_USERS_SUCCESS,
+  GET_RANDOM_USERS_FAIL,
 } from "../constants/userConstants";
 
 export const userReducer = (state = { user: null }, action) => {
@@ -35,6 +39,19 @@ export const postsReducer = (state = { posts: null }, action) => {
     case GET_CURRENT_POST_STATE:
       return { postsLoading: false, posts: state.posts };
 
+    default:
+      return state;
+  }
+};
+
+export const suggUsersReducer = (state = { suggUsers: null }, action) => {
+  switch (action.type) {
+    case GET_RANDOM_USERS_REQUEST:
+      return { suggUsersLoading: true };
+    case GET_RANDOM_USERS_SUCCESS:
+      return { suggUsersLoading: false, suggUsers: action.payload };
+    case GET_RANDOM_USERS_FAIL:
+      return { suggUsersLoading: false, suggUsersError: action.payload };
     default:
       return state;
   }

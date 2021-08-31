@@ -20,6 +20,12 @@ import {
   GET_USER_BY_ID_REQUEST,
   GET_USER_BY_ID_FAIL,
   GET_CURRENT_POST_STATE,
+  SET_FOLLOW_REQUEST,
+  SET_FOLLOW_FAIL,
+  GET_RANDOM_USERS_REQUEST,
+  GET_RANDOM_USERS_FAIL,
+  GET_RANDOM_USERS_SUCCESS,
+  SET_FOLLOW_SUCCESS,
 } from "../constants/userConstants";
 import axios from "axios";
 
@@ -186,3 +192,38 @@ export const setLikeToPost = (likeProps) => async (dispatch) => {
     dispatch({ type: SET_LIKE_FAIL, payload: err.message });
   }
 };
+
+export const getRandomSuggUsers = (_userId) => async (dispatch) => {
+  dispatch({
+    type: GET_RANDOM_USERS_REQUEST,
+  });
+  try {
+    const { data } = await axios.post("/api/user/get-users", {
+      data: { _userId },
+    });
+    dispatch({
+      type: GET_RANDOM_USERS_SUCCESS,
+      payload: data.data,
+    });
+  } catch (err) {
+    dispatch({ type: GET_RANDOM_USERS_FAIL, payload: err.message });
+  }
+};
+
+export const setFollow =
+  ({ _userId, _currentUserId }) =>
+  async (dispatch) => {
+    dispatch({
+      type: SET_FOLLOW_REQUEST,
+    });
+    try {
+      const { data } = await axios.post("/api/user/set-follow", {
+        data: { _userId, _currentUserId },
+      });
+      dispatch({
+        type: SET_FOLLOW_SUCCESS,
+      });
+    } catch (err) {
+      dispatch({ type: SET_FOLLOW_FAIL, payload: err.message });
+    }
+  };
