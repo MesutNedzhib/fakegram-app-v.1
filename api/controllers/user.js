@@ -82,22 +82,35 @@ const getUsers = expressAsyncHandler(async (req, res) => {
 
 const setFollow = expressAsyncHandler(async (req, res) => {
   const { _userId, _currentUserId } = req.body.data;
-  const handleFollowing = await User.findOne({ _id: _userId });
+  const handleCurrentUserFollowing = await User.findOne({
+    _id: _currentUserId,
+  });
+  const handleUserFollowing = await User.findOne({ _id: _userId });
 
-  if (!handleFollowing.followers.includes(_currentUserId)) {
-    handleFollowing.followers.push(_currentUserId);
+  if (!handleCurrentUserFollowing.following.includes(_userId)) {
+    handleCurrentUserFollowing.following.push(_userId);
   } else {
-    handleFollowing.followers.splice(
-      handleFollowing.followers.indexOf(_currentUserId),
+    handleCurrentUserFollowing.following.splice(
+      handleCurrentUserFollowing.following.indexOf(_userId),
       1
     );
   }
 
-  await handleFollowing.save();
+  if (!handleUserFollowing.followers.includes(_currentUserId)) {
+    handleUserFollowing.followers.push(_currentUserId);
+  } else {
+    handleUserFollowing.followers.splice(
+      handleUserFollowing.followers.indexOf(_currentUserId),
+      1
+    );
+  }
+
+  await handleUserFollowing.save();
+  await handleCurrentUserFollowing.save();
 
   res.status(200).json({
     message: "Set Following - Success",
-    data: handleFollowing,
+    data: handleUserFollowing,
   });
 });
 

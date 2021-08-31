@@ -3,7 +3,11 @@ import Button from "@material-ui/core/Button";
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { getRandomSuggUsers, setFollow } from "../../actions/userActions";
+import {
+  getRandomSuggUsers,
+  getUserById,
+  setFollow,
+} from "../../actions/userActions";
 import { getPosts } from "../../actions/postActions";
 import Post from "../../components/Post/Post";
 import "./HomeScreen.scss";
@@ -27,6 +31,7 @@ function HomeScreen() {
 
   useEffect(() => {
     dispatch(getRandomSuggUsers(user._id));
+    dispatch(getUserById(user._id));
   }, [dispatch, user._id]);
 
   useEffect(() => {
