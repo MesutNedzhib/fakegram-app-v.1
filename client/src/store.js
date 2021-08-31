@@ -1,11 +1,7 @@
 import { applyMiddleware, combineReducers, compose, createStore } from "redux";
 import thunk from "redux-thunk";
-import {
-  postsReducer,
-  suggUsersReducer,
-  userReducer,
-} from "./reducers/userReducers";
-
+import { suggUsersReducer, userReducer } from "./reducers/userReducers";
+import { postsReducer } from "./reducers/postReducers";
 const initialState = {
   user: {
     user: localStorage.getItem("user")

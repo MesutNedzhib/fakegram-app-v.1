@@ -1,24 +1,22 @@
 import { Avatar } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import {
-  getPosts,
-  getRandomSuggUsers,
-  getUserById,
-  setFollow,
-} from "../../actions/userActions";
+import { getRandomSuggUsers, setFollow } from "../../actions/userActions";
+import { getPosts } from "../../actions/postActions";
 import Post from "../../components/Post/Post";
 import "./HomeScreen.scss";
 import { io } from "socket.io-client";
-import {
-  GET_POSTS_SUCCESS,
-  GET_RANDOM_USERS_SUCCESS,
-} from "../../constants/userConstants";
+import { GET_RANDOM_USERS_SUCCESS } from "../../constants/userConstants";
+import { GET_POSTS_SUCCESS } from "../../constants/postConstants";
 
 function HomeScreen() {
+  const history = useHistory();
+  const dispatch = useDispatch();
+
   const socket = useRef();
+
   const { loading, error, user } = useSelector((state) => state.user);
   const { suggUsersLoading, suggUsersError, suggUsers } = useSelector(
     (state) => state.suggUsers
@@ -26,11 +24,6 @@ function HomeScreen() {
   const { postsLoading, postsError, posts } = useSelector(
     (state) => state.posts
   );
-
-  // console.log(posts);
-  const history = useHistory();
-  const dispatch = useDispatch();
-  // console.log(socket);
 
   useEffect(() => {
     dispatch(getRandomSuggUsers(user._id));
@@ -64,7 +57,6 @@ function HomeScreen() {
     if (!user) {
       history.push("/");
     }
-    // dispatch(getUserById(user._id));
     dispatch(getPosts());
   }, [user, history, dispatch]);
 
