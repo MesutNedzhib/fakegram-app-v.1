@@ -30,9 +30,9 @@ function HomeScreen() {
   );
 
   useEffect(() => {
-    dispatch(getRandomSuggUsers(user._id));
-    dispatch(getUserById(user._id));
-  }, [dispatch, user._id]);
+    dispatch(getRandomSuggUsers(user?._id));
+    dispatch(getUserById(user?._id));
+  }, [dispatch, user?._id]);
 
   useEffect(() => {
     socket.current = io("ws://localhost:8900");
@@ -74,45 +74,47 @@ function HomeScreen() {
           ))}
         </div>
         <div className="suggestions-side">
-          {suggUsers?.map((item, index) => (
-            <div key={index} className="sugg-user">
-              <div className="sugg-user-info">
-                <Avatar src={item.imageUrl} />
-                <h4>{item.name}</h4>
-              </div>
-              {item?.followers.includes(user._id) ? (
-                <div className="sugg-user-follow-btn">
-                  <Button
-                    onClick={() =>
-                      dispatch(
-                        setFollow({
-                          _userId: item._id,
-                          _currentUserId: user._id,
-                        })
-                      )
-                    }
-                  >
-                    Unfollow
-                  </Button>
+          {suggUsers
+            ? suggUsers.map((item, index) => (
+                <div key={index} className="sugg-user">
+                  <div className="sugg-user-info">
+                    <Avatar src={item.imageUrl} />
+                    <h4>{item.name}</h4>
+                  </div>
+                  {item?.followers.includes(user._id) ? (
+                    <div className="sugg-user-follow-btn">
+                      <Button
+                        onClick={() =>
+                          dispatch(
+                            setFollow({
+                              _userId: item._id,
+                              _currentUserId: user._id,
+                            })
+                          )
+                        }
+                      >
+                        Unfollow
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="sugg-user-follow-btn">
+                      <Button
+                        onClick={() =>
+                          dispatch(
+                            setFollow({
+                              _userId: item._id,
+                              _currentUserId: user._id,
+                            })
+                          )
+                        }
+                      >
+                        Follow
+                      </Button>
+                    </div>
+                  )}
                 </div>
-              ) : (
-                <div className="sugg-user-follow-btn">
-                  <Button
-                    onClick={() =>
-                      dispatch(
-                        setFollow({
-                          _userId: item._id,
-                          _currentUserId: user._id,
-                        })
-                      )
-                    }
-                  >
-                    Follow
-                  </Button>
-                </div>
-              )}
-            </div>
-          ))}
+              ))
+            : ""}
         </div>
       </div>
     </div>

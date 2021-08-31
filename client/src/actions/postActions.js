@@ -35,8 +35,8 @@ export const postUploadByUserId = (postData) => async (dispatch) => {
 };
 
 export const getPosts = () => async (dispatch, getState) => {
-  const following = getState().user.user.following;
-  following.push(getState().user.user._id);
+  const following = getState().user?.user?.following;
+  following?.push(getState().user?.user?._id);
 
   dispatch({
     type: GET_POSTS_REQUEST,
