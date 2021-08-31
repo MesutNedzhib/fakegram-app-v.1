@@ -44,17 +44,38 @@ function Post({ postData }) {
           <h3>{postData._username}</h3>
         </div>
         <div className="post-body">
-          <div className="post-image">
+          <div
+            className="post-image"
+            onDoubleClick={() =>
+              dispatch(
+                setLikeToPost({
+                  _postId: postData._id,
+                  currentUserId: user?._id,
+                })
+              )
+            }
+          >
             <img src={`../uploads/${postData.imageUrl}`} alt="" />
           </div>
           <div className="post-status">
-            <Badge
-              badgeContent={postData.likes.length}
-              color="error"
-              onClick={() => setLikeToPostHandle()}
-            >
-              <FavoriteBorderIcon />
-            </Badge>
+            {postData?.likes.includes(user._id) ? (
+              <Badge
+                badgeContent={postData.likes.length}
+                color="error"
+                onClick={() => setLikeToPostHandle()}
+              >
+                <FavoriteIcon />
+              </Badge>
+            ) : (
+              <Badge
+                badgeContent={postData.likes.length}
+                color="error"
+                onClick={() => setLikeToPostHandle()}
+              >
+                <FavoriteBorderIcon />
+              </Badge>
+            )}
+
             <Badge badgeContent={postData.comments.length} color="primary">
               <ChatBubbleOutlineIcon />
             </Badge>
@@ -76,7 +97,7 @@ function Post({ postData }) {
             ))}
           </div>
           <div className="post-timestamp">
-            <span>{timeago.format(postData.createdAt)}</span>
+            <small>{timeago.format(postData.createdAt)}</small>
           </div>
           <div className="post-add-comment">
             <div className="post-add-comment-write">

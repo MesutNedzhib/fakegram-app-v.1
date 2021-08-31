@@ -14,7 +14,9 @@ function Navbar() {
   return (
     <div className="navbar">
       <div className="navbar-container">
-        <h1 onClick={() => logout()}>Navbar</h1>
+        <h1 onClick={() => logout()}>
+          Fake<span style={{ color: "orange" }}>gram</span>
+        </h1>
         <PhotoCameraIcon onClick={() => setCreatePostState(true)} />
       </div>
       {createPostState ? <CreatePost setCreatePost={setCreatePostState} /> : ""}

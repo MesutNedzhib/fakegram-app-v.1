@@ -1,13 +1,23 @@
 .navbar {
   position: fixed;
-  background-color: blueviolet;
+  background-color: white;
   width: 100%;
   z-index: 99;
+  border-bottom: 1px solid rgb(228, 228, 228);
 }
 .navbar-container {
   //   position: fixed;
   //   background-color: blueviolet;
   display: flex;
+  padding: 5px 0;
+  padding-bottom: 8px;
+  max-width: 940px;
+  margin: auto;
+  justify-content: space-between;
+  align-items: center;
+  h1 {
+    color: gray;
+  }
 }
 .create-post {
   position: absolute;
