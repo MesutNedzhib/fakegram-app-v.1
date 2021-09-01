@@ -93,6 +93,7 @@ function HomeScreen() {
             ? suggUsers.map((item, index) => (
                 <div key={index} className="sugg-user">
                   <div
+                    style={{ cursor: "pointer" }}
                     className="sugg-user-info"
                     onClick={() => history.push(`/${item._id}/hp`)}
                   >
