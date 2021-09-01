@@ -99,28 +99,6 @@ connection.once("open", () => {
 
   usersCollection.on("change", (change) => {
     switch (change.operationType) {
-      // case "insert":
-      //   const newPost = {
-      //     _id: change.fullDocument._id,
-      //     _userId: change.fullDocument._userId,
-      //     _userImageUrl: change.fullDocument._userImageUrl,
-      //     _username: change.fullDocument._username,
-      //     likes: change.fullDocument.likes,
-      //     comments: change.fullDocument.comments,
-      //     description: change.fullDocument.description,
-      //     imageUrl: change.fullDocument.imageUrl,
-      //     createdAt: change.fullDocument.createdAt,
-      //   };
-
-      //   currentPosts.push(newPost);
-      //   currentPosts.sort((x, y) => {
-      //     return new Date(y.createdAt) - new Date(x.createdAt);
-      //   });
-
-      //   io.emit("newPosts", currentPosts);
-
-      //   break;
-
       case "update":
         const updatedUser = {
           _id: change.fullDocument._id,
@@ -136,7 +114,6 @@ connection.once("open", () => {
         currentSuggUsers[index] = updatedUser;
 
         io.emit("newSuggUsers", currentSuggUsers);
-
         break;
     }
   });

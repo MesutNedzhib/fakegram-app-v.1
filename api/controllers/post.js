@@ -41,30 +41,6 @@ const uploadPost = expressAsyncHandler(async (req, res) => {
       message: "Unsuccessfully Created Post",
     });
   }
-
-  //   const postField = await User.findOne({ _id: _userId });
-  //   const postModel = new UploadPost({
-  //     _userId,
-  //     _userImageUrl,
-  //     _username,
-  //     imageUrl,
-  //     description,
-  //   });
-  //   const successPostModelCreated = await postModel.save();
-  //   if (successPostModelCreated) {
-  //     postField.posts.push(successPostModelCreated);
-  //     await postField.save();
-  //     res.status(200).json({
-  //       success: true,
-  //       message: "Poste Created",
-  //       data: postField,
-  //     });
-  //   } else {
-  //     res.status(404).json({
-  //       success: false,
-  //       message: "Bad request",
-  //     });
-  //   }
 });
 
 const getPosts = expressAsyncHandler(async (req, res) => {
@@ -77,19 +53,6 @@ const getPosts = expressAsyncHandler(async (req, res) => {
       newBack = newBack.concat(postData);
     }
   }
-
-  //   const followingList = userData.following;
-  //   followingList.push(_userId);
-  //   let newBack = [];
-
-  //   if (followingList) {
-  //     for (let i of followingList) {
-  //       const listWithPosts = await User.findById({ _id: i });
-  //       if (listWithPosts) {
-  //         newBack = newBack.concat(listWithPosts.posts);
-  //       }
-  //     }
-  //   }
 
   newBack.sort((a, b) => {
     return new Date(b.createdAt) - new Date(a.createdAt);

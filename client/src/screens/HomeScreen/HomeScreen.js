@@ -58,6 +58,15 @@ function HomeScreen() {
     });
   }, [suggUsers, dispatch]);
 
+  const setFollowHandle = (item) => {
+    dispatch(
+      setFollow({
+        _userId: item._id,
+        _currentUserId: user._id,
+      })
+    );
+  };
+
   useEffect(() => {
     if (!user) {
       history.push("/");
@@ -98,16 +107,7 @@ function HomeScreen() {
                     </div>
                   ) : (
                     <div className="sugg-user-follow-btn">
-                      <Button
-                        onClick={() =>
-                          dispatch(
-                            setFollow({
-                              _userId: item._id,
-                              _currentUserId: user._id,
-                            })
-                          )
-                        }
-                      >
+                      <Button onClick={() => setFollowHandle(item)}>
                         Follow
                       </Button>
                     </div>
