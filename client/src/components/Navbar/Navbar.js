@@ -31,7 +31,7 @@ function Navbar() {
       <div className="navbar-container">
         <div className="navbar-left-side">
           <h1 style={{ cursor: "pointer" }} onClick={() => history.push("/hp")}>
-            Fake<span style={{ color: "orange" }}>gram</span>
+            fake<span style={{ color: "orange" }}>gram</span>
           </h1>
         </div>
         <div className="navbar-right-side">

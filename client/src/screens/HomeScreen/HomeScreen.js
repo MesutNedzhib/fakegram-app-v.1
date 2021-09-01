@@ -60,7 +60,7 @@ function HomeScreen() {
 
   useEffect(() => {
     socket.current.on("updatedUser", (updatedUser) => {
-      console.log(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
     });
   }, []);
 
@@ -77,7 +77,9 @@ function HomeScreen() {
     if (!user) {
       history.push("/");
     }
-    dispatch(getPosts());
+    if (!posts) {
+      dispatch(getPosts());
+    }
   }, [user, history, dispatch]);
 
   return (

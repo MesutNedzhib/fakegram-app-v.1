@@ -10,9 +10,11 @@ import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline";
 import { Avatar } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
 
 function Post({ postData }) {
   const { user } = useSelector((state) => state.user);
+  const history = useHistory();
 
   const dispatch = useDispatch();
   const [commentValue, setCommentValue] = useState();
@@ -21,7 +23,7 @@ function Post({ postData }) {
       dispatch(
         setComment({
           _postId: postData._id,
-          _userId: postData._userId,
+          _userId: user._id,
           _username: postData._username,
           _userImageUrl: user?.imageUrl,
           createdAt: new Date(),
@@ -42,7 +44,11 @@ function Post({ postData }) {
   return (
     <div className="post">
       <div className="post-container">
-        <div className="post-header">
+        <div
+          className="post-header"
+          style={{ cursor: "pointer" }}
+          onClick={() => history.push(`/${postData._userId}/hp`)}
+        >
           <Avatar src={postData?._userImageUrl} />
           <h3>{postData._username}</h3>
         </div>
@@ -91,7 +97,11 @@ function Post({ postData }) {
           <div className="post-comments">
             {postData.comments.map((item, index) => (
               <div key={index} className="user-comment-conrainer">
-                <div className="user-comment">
+                <div
+                  className="user-comment"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => history.push(`/${item?._userId}/hp`)}
+                >
                   <Avatar src={item?._userImageUrl} />
                   <p>
                     <h4>{item._username}</h4>
