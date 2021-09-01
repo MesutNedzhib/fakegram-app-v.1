@@ -18,8 +18,20 @@
   h1 {
     color: gray;
   }
-  svg {
-    cursor: pointer;
+
+  .navbar-right-side {
+    display: flex;
+    align-items: center;
+
+    div {
+      cursor: pointer;
+      margin: 0 5px;
+    }
+
+    svg {
+      cursor: pointer;
+      margin: 0 5px;
+    }
   }
 
   @media (max-width: 480px) {

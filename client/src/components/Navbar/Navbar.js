@@ -5,6 +5,8 @@ import { userLogout } from "../../actions/userActions";
 import CreatePost from "../CreatePost/CreatePost";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
 import { useHistory } from "react-router-dom";
+import { Avatar } from "@material-ui/core";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
 function Navbar() {
   const dispatch = useDispatch();
@@ -13,6 +15,7 @@ function Navbar() {
   const { postUploadLoading, uploadedPostError, uploadedPost } = useSelector(
     (state) => state.uploadedPost
   );
+  const { user } = useSelector((state) => state.user);
   const logout = () => {
     dispatch(userLogout());
     history.push("/");
@@ -26,10 +29,20 @@ function Navbar() {
   return (
     <div className="navbar">
       <div className="navbar-container">
-        <h1 onClick={() => logout()}>
-          Fake<span style={{ color: "orange" }}>gram</span>
-        </h1>
-        <PhotoCameraIcon onClick={() => setCreatePostState(true)} />
+        <div className="navbar-left-side">
+          <h1 style={{ cursor: "pointer" }} onClick={() => history.push("/hp")}>
+            Fake<span style={{ color: "orange" }}>gram</span>
+          </h1>
+        </div>
+        <div className="navbar-right-side">
+          <PhotoCameraIcon onClick={() => setCreatePostState(true)} />
+          <Avatar
+            src={user.imageUrl}
+            style={{ width: "20px", height: "20px" }}
+            onClick={() => history.push(`/${user._id}/hp`)}
+          />
+          <ExitToAppIcon onClick={() => logout()} />
+        </div>
       </div>
       {createPostState ? <CreatePost setCreatePost={setCreatePostState} /> : ""}
     </div>

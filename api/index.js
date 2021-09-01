@@ -114,6 +114,7 @@ connection.once("open", () => {
         currentSuggUsers[index] = updatedUser;
 
         io.emit("newSuggUsers", currentSuggUsers);
+        io.emit("updatedUser", updatedUser);
         break;
     }
   });

@@ -1,0 +1,95 @@
+.profileScreen-continer {
+  padding-top: 60px;
+  max-width: 940px;
+  margin: auto;
+}
+
+.profileScreen-user-info {
+  width: 100%;
+  padding: 20px 0;
+  .user-info-avatar {
+    display: flex;
+    justify-content: center;
+  }
+
+  .user-info-name {
+    text-align: center;
+    margin-top: 10px;
+    h3 {
+      font-weight: 400;
+    }
+  }
+  .user-info-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    span {
+      font-weight: 600;
+      margin: 0 15px;
+    }
+  }
+}
+
+.profileScreen-user-posts {
+  display: grid;
+  grid-template-columns: 293px 293px 293px;
+  grid-column-gap: 20px;
+  grid-row-gap: 20px;
+  border-top: 1px solid rgb(228, 228, 228);
+  padding: 10px 0;
+  justify-content: center;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 350px;
+
+    .profileScreen-user-post {
+      img {
+        height: 350px !important;
+      }
+    }
+  }
+
+  .profileScreen-user-post {
+    position: relative;
+
+    &:hover {
+      .profileScreen-user-post-hover {
+        display: block !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+      }
+    }
+    img {
+      width: 100%;
+      height: 293px;
+      object-fit: cover;
+    }
+
+    .profileScreen-user-post-hover {
+      display: none !important;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 1;
+      background-color: rgba(0, 0, 0, 0.582);
+      z-index: 100;
+
+      span {
+        display: flex;
+        align-items: center;
+        margin: 0 10px;
+        font-size: 18px;
+        font-weight: 600;
+        color: white;
+      }
+
+      svg {
+        margin-right: 5px;
+        color: white;
+      }
+    }
+  }
+}

@@ -111,10 +111,27 @@ const setLikeToPost = expressAsyncHandler(async (req, res) => {
   });
 });
 
+const getPostsByUserId = expressAsyncHandler(async (req, res) => {
+  const _userId = req.params.id;
+
+  const handlePost = await Post.find({ _userId: _userId });
+
+  handlePost.sort((x, y) => {
+    return new Date(y.createdAt) - new Date(x.createdAt);
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "GET Likes",
+    data: handlePost,
+  });
+});
+
 module.exports = {
   imageFileUpload,
   uploadPost,
   getPosts,
   setCommentToPost,
   setLikeToPost,
+  getPostsByUserId,
 };

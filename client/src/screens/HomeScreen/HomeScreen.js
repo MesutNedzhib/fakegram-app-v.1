@@ -58,6 +58,12 @@ function HomeScreen() {
     });
   }, [suggUsers, dispatch]);
 
+  useEffect(() => {
+    socket.current.on("updatedUser", (updatedUser) => {
+      console.log(updatedUser);
+    });
+  }, []);
+
   const setFollowHandle = (item) => {
     dispatch(
       setFollow({
@@ -86,7 +92,10 @@ function HomeScreen() {
           {suggUsers
             ? suggUsers.map((item, index) => (
                 <div key={index} className="sugg-user">
-                  <div className="sugg-user-info">
+                  <div
+                    className="sugg-user-info"
+                    onClick={() => history.push(`/${item._id}/hp`)}
+                  >
                     <Avatar src={item.imageUrl} />
                     <h4>{item.name}</h4>
                   </div>
