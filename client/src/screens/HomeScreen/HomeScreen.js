@@ -28,6 +28,15 @@ function HomeScreen() {
   const { posts } = useSelector((state) => state.posts);
 
   useEffect(() => {
+    if (!user) {
+      history.push("/");
+    }
+    if (!posts) {
+      dispatch(getPosts());
+    }
+  }, [user, history, dispatch, posts]);
+
+  useEffect(() => {
     dispatch(getRandomSuggUsers(user?._id));
     dispatch(getUserById(user?._id));
   }, [dispatch, user?._id]);
@@ -70,15 +79,6 @@ function HomeScreen() {
       })
     );
   };
-
-  useEffect(() => {
-    if (!user) {
-      history.push("/");
-    }
-    if (!posts) {
-      dispatch(getPosts());
-    }
-  }, [user, history, dispatch, posts]);
 
   return (
     <div className="homeScreen">
