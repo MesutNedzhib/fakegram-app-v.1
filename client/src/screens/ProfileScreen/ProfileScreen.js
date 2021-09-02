@@ -6,6 +6,8 @@ import axios from "axios";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline";
 import { useLocation } from "react-router-dom";
+import LoadingBox from "../../components/LoadingBox/LoadingBox";
+import MessageBox from "../../components/MessageBox/MessageBox";
 
 function ProfileScreen() {
   const location = useLocation();
@@ -38,46 +40,54 @@ function ProfileScreen() {
 
   return (
     <div className="profileScreen">
-      <div className="profileScreen-continer">
-        <div className="profileScreen-user-info">
-          <div className="user-info-avatar">
-            <Avatar
-              src={user?.data?.imageUrl}
-              style={{ width: "125px", height: "125px" }}
-            />
-          </div>
-          <div className="user-info-name">
-            <h3>{user?.data?.name}</h3>
-          </div>
-          <div className="user-info-status">
-            <span>
-              {posts?.data?.length} <small>POSTS</small>
-            </span>
-            <span>
-              {user?.data?.followers?.length} <small>FOLLOWERS</small>
-            </span>
-            <span>
-              {user?.data?.following?.length} <small>FOLLOWING</small>
-            </span>
-          </div>
-        </div>
-        <div className="profileScreen-user-posts">
-          {posts?.data?.map((item, index) => (
-            <div key={index} className="profileScreen-user-post">
-              <img src={`../uploads/${item.imageUrl}`} alt="" />
-              <div className="profileScreen-user-post-hover">
-                <span>
-                  <FavoriteIcon />
-                  {item.likes.length}
-                </span>
-                <span>
-                  <ChatBubbleOutlineIcon /> {item.comments.length}
-                </span>
-              </div>
+      {user && posts ? (
+        <div className="profileScreen-continer">
+          <div className="profileScreen-user-info">
+            <div className="user-info-avatar">
+              <Avatar
+                src={user?.data?.imageUrl}
+                style={{ width: "125px", height: "125px" }}
+              />
             </div>
-          ))}
+            <div className="user-info-name">
+              <h3>{user?.data?.name}</h3>
+            </div>
+            <div className="user-info-status">
+              <span>
+                {posts?.data?.length} <small>POSTS</small>
+              </span>
+              <span>
+                {user?.data?.followers?.length} <small>FOLLOWERS</small>
+              </span>
+              <span>
+                {user?.data?.following?.length} <small>FOLLOWING</small>
+              </span>
+            </div>
+          </div>
+          {posts?.data?.length !== 0 ? (
+            <div className="profileScreen-user-posts">
+              {posts?.data?.map((item, index) => (
+                <div key={index} className="profileScreen-user-post">
+                  <img src={`../uploads/${item.imageUrl}`} alt="" />
+                  <div className="profileScreen-user-post-hover">
+                    <span>
+                      <FavoriteIcon />
+                      {item.likes.length}
+                    </span>
+                    <span>
+                      <ChatBubbleOutlineIcon /> {item.comments.length}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <MessageBox message={"No Posts Yet"} variant={"error"} />
+          )}
         </div>
-      </div>
+      ) : (
+        <LoadingBox />
+      )}
     </div>
   );
 }
