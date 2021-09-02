@@ -6,11 +6,6 @@ import {
   IMAGE_FILE_UPLOAD_REQUEST,
   IMAGE_FILE_UPLOAD_SUCCESS,
   USER_LOGOUT,
-  SET_COMMENT_REQUEST,
-  SET_COMMENT_FAIL,
-  SET_COMMENT_SUCCESS,
-  SET_LIKE_FAIL,
-  SET_LIKE_REQUEST,
   GET_USER_BY_ID_REQUEST,
   GET_USER_BY_ID_FAIL,
   SET_FOLLOW_REQUEST,
@@ -126,9 +121,11 @@ export const setFollow =
       const { data } = await axios.post("/api/user/set-follow", {
         data: { _userId, _currentUserId },
       });
-      dispatch({
-        type: SET_FOLLOW_SUCCESS,
-      });
+      if (data) {
+        dispatch({
+          type: SET_FOLLOW_SUCCESS,
+        });
+      }
     } catch (err) {
       dispatch({ type: SET_FOLLOW_FAIL, payload: err.message });
     }

@@ -2,8 +2,7 @@ import "./App.css";
 import Navbar from "./components/Navbar/Navbar";
 import HomeScreen from "./screens/HomeScreen/HomeScreen";
 import LoginScreen from "./screens/LoginScreen/LoginScreen";
-import { Route, useHistory, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Route, useLocation } from "react-router-dom";
 import ProfileScreen from "./screens/ProfileScreen/ProfileScreen";
 
 function App() {

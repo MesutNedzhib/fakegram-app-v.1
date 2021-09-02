@@ -1,7 +1,18 @@
 .loginScreen-container {
   text-align: center;
+  height: 100vh;
+  h1 {
+    padding-top: 15%;
+    color: orchid;
+    color: purple;
+    font-family: "Allison", cursive;
+    font-size: 96px;
+    span {
+      color: orange;
+    }
+  }
   button {
-    margin-top: 50px;
+    margin-top: 150px;
     width: 60%;
     justify-content: center;
   }

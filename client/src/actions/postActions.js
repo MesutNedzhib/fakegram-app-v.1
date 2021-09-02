@@ -59,15 +59,6 @@ export const getPosts = () => async (dispatch, getState) => {
 };
 
 export const setComment = (commentProps) => async (dispatch, getState) => {
-  // let posts = getState().posts.posts;
-  // // console.log(posts);
-  // const findPost = posts.findIndex((x) => x._id === commentProps._postId);
-  // // posts[findPost] = posts[findPost].comments.push({ TEST: "dsa" });
-  // const commentsR = posts[findPost]?.comments;
-  // commentsR.push(commentProps);
-  // posts[findPost].comments = commentsR;
-  // // console.log(posts);
-
   dispatch({
     type: SET_COMMENT_REQUEST,
   });
@@ -75,10 +66,8 @@ export const setComment = (commentProps) => async (dispatch, getState) => {
     const { data } = await axios.post("/api/post/set-comment", {
       data: commentProps,
     });
-    // dispatch({
-    //   type: GET_POSTS_SUCCESS,
-    //   payload: data.data,
-    // });
+    if (data) {
+    }
   } catch (err) {
     dispatch({ type: SET_COMMENT_FAIL, payload: err.message });
   }
@@ -92,9 +81,11 @@ export const setLikeToPost = (likeProps) => async (dispatch) => {
     const { data } = await axios.post("/api/post/set-like", {
       data: likeProps,
     });
-    dispatch({
-      type: GET_CURRENT_POST_STATE,
-    });
+    if (data) {
+      dispatch({
+        type: GET_CURRENT_POST_STATE,
+      });
+    }
   } catch (err) {
     dispatch({ type: SET_LIKE_FAIL, payload: err.message });
   }

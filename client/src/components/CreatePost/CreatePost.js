@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./CreatePost.scss";
 import { useDispatch, useSelector } from "react-redux";
 import CloseIcon from "@material-ui/icons/Close";

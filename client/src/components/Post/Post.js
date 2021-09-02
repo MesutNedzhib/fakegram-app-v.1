@@ -5,7 +5,6 @@ import { setComment, setLikeToPost } from "../../actions/postActions";
 import * as timeago from "timeago.js";
 import Badge from "@material-ui/core/Badge";
 import Button from "@material-ui/core/Button";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline";

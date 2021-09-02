@@ -12,9 +12,7 @@ function Navbar() {
   const dispatch = useDispatch();
   const history = useHistory();
   const [createPostState, setCreatePostState] = useState(false);
-  const { postUploadLoading, uploadedPostError, uploadedPost } = useSelector(
-    (state) => state.uploadedPost
-  );
+  const { uploadedPost } = useSelector((state) => state.uploadedPost);
   const { user } = useSelector((state) => state.user);
   const logout = () => {
     dispatch(userLogout());

@@ -27,7 +27,10 @@ function LoginScreen() {
   return (
     <div className="loginScreen">
       <div className="loginScreen-container">
-        <h1>Login</h1>
+        <h1>
+          fake<span>gram</span>
+        </h1>
+
         <GoogleLogin
           clientId="817135178922-98tq33dpatkunc9pk9ueedhrtfgc6dk4.apps.googleusercontent.com"
           buttonText="Login"

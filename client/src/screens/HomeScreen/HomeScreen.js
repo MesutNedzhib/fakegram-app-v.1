@@ -14,6 +14,8 @@ import "./HomeScreen.scss";
 import { io } from "socket.io-client";
 import { GET_RANDOM_USERS_SUCCESS } from "../../constants/userConstants";
 import { GET_POSTS_SUCCESS } from "../../constants/postConstants";
+import LoadingBox from "../../components/LoadingBox/LoadingBox";
+import MessageBox from "../../components/MessageBox/MessageBox";
 
 function HomeScreen() {
   const history = useHistory();
@@ -21,13 +23,9 @@ function HomeScreen() {
 
   const socket = useRef();
 
-  const { loading, error, user } = useSelector((state) => state.user);
-  const { suggUsersLoading, suggUsersError, suggUsers } = useSelector(
-    (state) => state.suggUsers
-  );
-  const { postsLoading, postsError, posts } = useSelector(
-    (state) => state.posts
-  );
+  const { user } = useSelector((state) => state.user);
+  const { suggUsers } = useSelector((state) => state.suggUsers);
+  const { posts } = useSelector((state) => state.posts);
 
   useEffect(() => {
     dispatch(getRandomSuggUsers(user?._id));
@@ -80,7 +78,7 @@ function HomeScreen() {
     if (!posts) {
       dispatch(getPosts());
     }
-  }, [user, history, dispatch]);
+  }, [user, history, dispatch, posts]);
 
   return (
     <div className="homeScreen">
@@ -91,42 +89,45 @@ function HomeScreen() {
           ))}
         </div>
         <div className="suggestions-side">
-          {suggUsers
-            ? suggUsers.map((item, index) => (
-                <div key={index} className="sugg-user">
-                  <div
-                    style={{ cursor: "pointer" }}
-                    className="sugg-user-info"
-                    onClick={() => history.push(`/${item._id}/hp`)}
-                  >
-                    <Avatar src={item.imageUrl} />
-                    <h4>{item.name}</h4>
-                  </div>
-                  {item?.followers.includes(user._id) ? (
-                    <div className="sugg-user-follow-btn">
-                      <Button
-                        onClick={() =>
-                          dispatch(
-                            setFollow({
-                              _userId: item._id,
-                              _currentUserId: user._id,
-                            })
-                          )
-                        }
-                      >
-                        Unfollow
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="sugg-user-follow-btn">
-                      <Button onClick={() => setFollowHandle(item)}>
-                        Follow
-                      </Button>
-                    </div>
-                  )}
+          {!suggUsers ? <LoadingBox /> : ""}
+          {suggUsers?.length === 0 ? (
+            <MessageBox message={"Not Posts Yet"} />
+          ) : (
+            suggUsers?.map((item, index) => (
+              <div key={index} className="sugg-user">
+                <div
+                  style={{ cursor: "pointer" }}
+                  className="sugg-user-info"
+                  onClick={() => history.push(`/${item._id}/hp`)}
+                >
+                  <Avatar src={item.imageUrl} />
+                  <h4>{item.name}</h4>
                 </div>
-              ))
-            : ""}
+                {item?.followers.includes(user._id) ? (
+                  <div className="sugg-user-follow-btn">
+                    <Button
+                      onClick={() =>
+                        dispatch(
+                          setFollow({
+                            _userId: item._id,
+                            _currentUserId: user._id,
+                          })
+                        )
+                      }
+                    >
+                      Unfollow
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="sugg-user-follow-btn">
+                    <Button onClick={() => setFollowHandle(item)}>
+                      Follow
+                    </Button>
+                  </div>
+                )}
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>
