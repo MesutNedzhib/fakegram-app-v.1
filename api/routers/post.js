@@ -14,14 +14,15 @@ const {
 const comment = require("./comment");
 
 const router = express.Router();
+
 router.get("/get-user-posts", getAccessToRoute, getUserPosts);
+
 router.post(
   "/",
   getAccessToRoute,
   postImageUpload.single("post_image"),
   createPost
 );
-
 router.get("/", getAllPosts);
 router.get("/:id", getSingleUserPosts);
 

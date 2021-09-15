@@ -1,0 +1,19 @@
+.comment-conrainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.comment-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  .MuiAvatar-root {
+    width: 25px;
+    height: 25px;
+    margin-right: 5px;
+  }
+  h4 {
+    display: inline-block;
+    margin-right: 5px;
+  }
+}

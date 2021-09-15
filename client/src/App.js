@@ -8,9 +8,10 @@ import ProfileScreen from "./screens/ProfileScreen/ProfileScreen";
 function App() {
   const location = useLocation();
   const currentLocation = location.pathname.split("/")[1];
+
   return (
     <div className="app">
-      {currentLocation === "/auth" ? "" : <Navbar />}
+      {currentLocation === "auth" ? "" : <Navbar />}
       <Route exact path="/" component={HomeScreen} />
       <Route path="/:id/hp" component={ProfileScreen} />
       <Route path="/auth" component={LoginScreen} />

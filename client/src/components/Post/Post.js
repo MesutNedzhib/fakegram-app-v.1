@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "./Post.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { addCommentToPost, setLikeToPost } from "../../actions/postActions";
+import {
+  addCommentToPost,
+  setLikeUnlikeToPost,
+} from "../../actions/postActions";
 import * as timeago from "timeago.js";
 import Badge from "@material-ui/core/Badge";
 import Button from "@material-ui/core/Button";
@@ -11,6 +14,7 @@ import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline";
 import { Avatar } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
+import Comment from "../Comment/Comment";
 
 function Post({ postData }) {
   const { user } = useSelector((state) => state.user);
@@ -28,18 +32,18 @@ function Post({ postData }) {
           accessToken: user?.access_token,
         })
       );
-
       setCommentValue("");
     }
   };
-  const setLikeToPostHandle = () => {
+  const setLikeUnlikeToPostHandle = () => {
     dispatch(
-      setLikeToPost({
-        _postId: postData._id,
-        currentUserId: user?._id,
+      setLikeUnlikeToPost({
+        id: postData._id,
+        accessToken: user?.access_token,
       })
     );
   };
+
   return (
     <div className="post">
       <div className="post-container">
@@ -56,9 +60,9 @@ function Post({ postData }) {
             className="post-image"
             onDoubleClick={() =>
               dispatch(
-                setLikeToPost({
-                  _postId: postData._id,
-                  currentUserId: user?._id,
+                setLikeUnlikeToPost({
+                  id: postData._id,
+                  accessToken: user?.access_token,
                 })
               )
             }
@@ -66,19 +70,19 @@ function Post({ postData }) {
             <img src={`../uploads/${postData.imageUrl}`} alt="" />
           </div>
           <div className="post-status">
-            {postData?.likes.includes(user._id) ? (
+            {postData?.likes?.includes(user?._id) ? (
               <Badge
-                badgeContent={postData.likes.length}
+                badgeContent={postData?.likeCount}
                 color="error"
-                onClick={() => setLikeToPostHandle()}
+                onClick={() => setLikeUnlikeToPostHandle()}
               >
                 <FavoriteIcon />
               </Badge>
             ) : (
               <Badge
-                badgeContent={postData.likeCount}
+                badgeContent={postData?.likeCount}
                 color="error"
-                onClick={() => setLikeToPostHandle()}
+                onClick={() => setLikeUnlikeToPostHandle()}
               >
                 <FavoriteBorderIcon />
               </Badge>
@@ -93,26 +97,13 @@ function Post({ postData }) {
               <h4>{postData.user_name}</h4> {postData.content}
             </p>
           </div>
+
           <div className="post-comments">
             {postData?.comments?.map((item, index) => (
-              <div key={index} className="user-comment-conrainer">
-                <div
-                  className="user-comment"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => history.push(`/${item?.user}/hp`)}
-                >
-                  <Avatar src={item?.user_imageUrl} />
-                  <p>
-                    <h4>{item.user_name}</h4>
-                    {item.content}
-                  </p>
-                </div>
-                <div className="user-cooment-timestamp">
-                  <small>{timeago.format(item?.createdAt)}</small>
-                </div>
-              </div>
+              <Comment key={index} data={item} />
             ))}
           </div>
+
           <div className="post-timestamp">
             <small>{timeago.format(postData.createdAt)}</small>
           </div>

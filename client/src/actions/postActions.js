@@ -79,20 +79,25 @@ export const addCommentToPost =
     }
   };
 
-export const setLikeToPost = (likeProps) => async (dispatch) => {
-  dispatch({
-    type: SET_LIKE_REQUEST,
-  });
-  try {
-    const { data } = await axios.post("/api/post/set-like", {
-      data: likeProps,
+export const setLikeUnlikeToPost =
+  ({ id, accessToken }) =>
+  async (dispatch) => {
+    dispatch({
+      type: SET_LIKE_REQUEST,
     });
-    if (data) {
-      dispatch({
-        type: GET_CURRENT_POST_STATE,
+    try {
+      const { data } = await axios.get(`/api/post/${id}/like-unlike`, {
+        headers: {
+          Authorization: `Bearer: ${accessToken}`,
+        },
       });
+      console.log(data);
+      // if (data) {
+      //   dispatch({
+      //     type: GET_CURRENT_POST_STATE,
+      //   });
+      // }
+    } catch (err) {
+      dispatch({ type: SET_LIKE_FAIL, payload: err.message });
     }
-  } catch (err) {
-    dispatch({ type: SET_LIKE_FAIL, payload: err.message });
-  }
-};
+  };
