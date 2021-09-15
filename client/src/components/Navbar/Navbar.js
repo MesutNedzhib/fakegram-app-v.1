@@ -14,9 +14,9 @@ function Navbar() {
   const [createPostState, setCreatePostState] = useState(false);
   const { uploadedPost } = useSelector((state) => state.uploadedPost);
   const { user } = useSelector((state) => state.user);
+
   const logout = () => {
     dispatch(userLogout());
-    history.push("/");
   };
 
   useEffect(() => {

@@ -29,7 +29,7 @@ export const login = (profileObj) => async (dispatch) => {
     const { data } = await axios.post("/api/auth/login", information);
 
     dispatch({ type: LOGIN_SUCCESS, payload: data });
-    // localStorage.setItem("user", JSON.stringify(data.data));
+    localStorage.setItem("user", JSON.stringify(data));
   } catch (error) {
     dispatch({
       type: LOGIN_FAIL,
@@ -67,33 +67,6 @@ export const userLogout = () => (dispatch) => {
     type: USER_LOGOUT,
   });
   localStorage.removeItem("user");
-};
-
-export const imageFileUpload = (formData) => async (dispatch) => {
-  const config = {
-    headers: {
-      "content-type": "multipart/form-data",
-    },
-  };
-  dispatch({
-    type: IMAGE_FILE_UPLOAD_REQUEST,
-  });
-  try {
-    const { data } = await axios.post(
-      "/api/post/image-file-upload",
-      formData,
-      config
-    );
-    dispatch({
-      type: IMAGE_FILE_UPLOAD_SUCCESS,
-      payload: data.data,
-    });
-  } catch (err) {
-    dispatch({
-      type: IMAGE_FILE_UPLOAD_FAIL,
-      payload: err.message,
-    });
-  }
 };
 
 export const getRandomSuggUsers = (_userId) => async (dispatch) => {
