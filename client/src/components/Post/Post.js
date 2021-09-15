@@ -16,8 +16,6 @@ function Post({ postData }) {
   const { user } = useSelector((state) => state.user);
   const history = useHistory();
 
-  console.log(postData);
-
   const dispatch = useDispatch();
   const [commentValue, setCommentValue] = useState();
 
@@ -78,7 +76,7 @@ function Post({ postData }) {
               </Badge>
             ) : (
               <Badge
-                badgeContent={postData.likes.length}
+                badgeContent={postData.likeCount}
                 color="error"
                 onClick={() => setLikeToPostHandle()}
               >
@@ -86,7 +84,7 @@ function Post({ postData }) {
               </Badge>
             )}
 
-            <Badge badgeContent={postData.comments.length} color="primary">
+            <Badge badgeContent={postData.commentCount} color="primary">
               <ChatBubbleOutlineIcon />
             </Badge>
           </div>

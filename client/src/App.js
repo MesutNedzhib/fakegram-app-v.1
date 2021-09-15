@@ -10,7 +10,7 @@ function App() {
   const currentLocation = location.pathname.split("/")[1];
   return (
     <div className="app">
-      {/* {currentLocation !== "" ? <Navbar /> : ""} */}
+      {currentLocation === "/auth" ? "" : <Navbar />}
       <Route exact path="/" component={HomeScreen} />
       <Route path="/:id/hp" component={ProfileScreen} />
       <Route path="/auth" component={LoginScreen} />

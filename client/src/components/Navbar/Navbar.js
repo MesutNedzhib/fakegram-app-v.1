@@ -35,7 +35,7 @@ function Navbar() {
         <div className="navbar-right-side">
           <PhotoCameraIcon onClick={() => setCreatePostState(true)} />
           <Avatar
-            src={user.imageUrl}
+            src={user.data.imageUrl}
             style={{ width: "20px", height: "20px" }}
             onClick={() => history.push(`/${user._id}/hp`)}
           />
