@@ -1,9 +1,9 @@
 import axios from "axios";
 import {
   GET_CURRENT_POST_STATE,
-  GET_POSTS_FAIL,
-  GET_POSTS_REQUEST,
-  GET_POSTS_SUCCESS,
+  GET_USER_POSTS_FAIL,
+  GET_USER_POSTS_REQUEST,
+  GET_USER_POSTS_SUCCESS,
   POST_UPLOAD_FAIL,
   POST_UPLOAD_REQUEST,
   POST_UPLOAD_SUCCESS,
@@ -34,44 +34,50 @@ export const postUploadByUserId = (postData) => async (dispatch) => {
   }
 };
 
-export const getPosts = () => async (dispatch, getState) => {
-  const following = getState().user.user.following;
-  following?.push(getState().user.user._id);
-
+export const getUserPosts = (accessToken) => async (dispatch) => {
   dispatch({
-    type: GET_POSTS_REQUEST,
+    type: GET_USER_POSTS_REQUEST,
   });
   try {
-    const { data } = await axios.post("/api/post/get-posts", {
-      data: { following },
+    const { data } = await axios.get("/api/post/get-user-posts", {
+      headers: {
+        Authorization: `Bearer: ${accessToken}`,
+      },
     });
-
     dispatch({
-      type: GET_POSTS_SUCCESS,
+      type: GET_USER_POSTS_SUCCESS,
       payload: data.data,
     });
   } catch (err) {
     dispatch({
-      type: GET_POSTS_FAIL,
+      type: GET_USER_POSTS_FAIL,
       payload: err.message,
     });
   }
 };
 
-export const setComment = (commentProps) => async (dispatch, getState) => {
-  dispatch({
-    type: SET_COMMENT_REQUEST,
-  });
-  try {
-    const { data } = await axios.post("/api/post/set-comment", {
-      data: commentProps,
+export const addCommentToPost =
+  ({ post_id, content, accessToken }) =>
+  async (dispatch) => {
+    dispatch({
+      type: SET_COMMENT_REQUEST,
     });
-    if (data) {
+    try {
+      const { data } = await axios.post(
+        `/api/post/${post_id}/comment`,
+        { content },
+        {
+          headers: {
+            Authorization: `Bearer: ${accessToken}`,
+          },
+        }
+      );
+
+      console.log(data);
+    } catch (err) {
+      dispatch({ type: SET_COMMENT_FAIL, payload: err.message });
     }
-  } catch (err) {
-    dispatch({ type: SET_COMMENT_FAIL, payload: err.message });
-  }
-};
+  };
 
 export const setLikeToPost = (likeProps) => async (dispatch) => {
   dispatch({

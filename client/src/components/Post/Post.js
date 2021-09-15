@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Post.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { setComment, setLikeToPost } from "../../actions/postActions";
+import { addCommentToPost, setLikeToPost } from "../../actions/postActions";
 import * as timeago from "timeago.js";
 import Badge from "@material-ui/core/Badge";
 import Button from "@material-ui/core/Button";
@@ -10,25 +10,27 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline";
 import { Avatar } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
 
 function Post({ postData }) {
   const { user } = useSelector((state) => state.user);
   const history = useHistory();
 
+  console.log(postData);
+
   const dispatch = useDispatch();
   const [commentValue, setCommentValue] = useState();
+
   const setCommentDataHandle = () => {
     if (commentValue.length !== 0) {
       dispatch(
-        setComment({
-          _postId: postData._id,
-          _userId: user._id,
-          _username: postData._username,
-          _userImageUrl: user?.imageUrl,
-          createdAt: new Date(),
-          comment: commentValue,
+        addCommentToPost({
+          post_id: postData._id,
+          content: commentValue,
+          accessToken: user?.access_token,
         })
       );
+
       setCommentValue("");
     }
   };
@@ -48,8 +50,8 @@ function Post({ postData }) {
           style={{ cursor: "pointer" }}
           onClick={() => history.push(`/${postData._userId}/hp`)}
         >
-          <Avatar src={postData?._userImageUrl} />
-          <h3>{postData._username}</h3>
+          <Avatar src={postData?.user_imageUrl} />
+          <h3>{postData.user_name}</h3>
         </div>
         <div className="post-body">
           <div
@@ -90,21 +92,21 @@ function Post({ postData }) {
           </div>
           <div className="post-description">
             <p>
-              <h4>{postData._username}</h4> {postData.description}
+              <h4>{postData.user_name}</h4> {postData.content}
             </p>
           </div>
           <div className="post-comments">
-            {postData.comments.map((item, index) => (
+            {postData?.comments?.map((item, index) => (
               <div key={index} className="user-comment-conrainer">
                 <div
                   className="user-comment"
                   style={{ cursor: "pointer" }}
-                  onClick={() => history.push(`/${item?._userId}/hp`)}
+                  onClick={() => history.push(`/${item?.user}/hp`)}
                 >
-                  <Avatar src={item?._userImageUrl} />
+                  <Avatar src={item?.user_imageUrl} />
                   <p>
-                    <h4>{item._username}</h4>
-                    {item.comment}
+                    <h4>{item.user_name}</h4>
+                    {item.content}
                   </p>
                 </div>
                 <div className="user-cooment-timestamp">
@@ -118,7 +120,7 @@ function Post({ postData }) {
           </div>
           <div className="post-add-comment">
             <div className="post-add-comment-write">
-              <Avatar src={user?.imageUrl} />
+              <Avatar src={user?.data?.imageUrl} />
               <input
                 type="text"
                 placeholder="Add a comment..."

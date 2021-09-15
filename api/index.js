@@ -5,6 +5,7 @@ const routers = require("./routers");
 const cors = require("cors");
 const path = require("path");
 const mongoose = require("mongoose");
+const customErrorHandler = require("./middlewares/error/customErrorHandler.js");
 const io = require("socket.io")(8900, {
   cors: {
     origin: "http://localhost:3000",
@@ -13,21 +14,28 @@ const io = require("socket.io")(8900, {
 
 const app = express();
 
-dotenv.config({
-  path: "./config/env/config.env",
-});
-
-connectDatabase();
-
+// Express - Body Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
+// Environment Variables
+dotenv.config({
+  path: "./config/env/config.env",
+});
+const PORT = process.env.PORT;
+
+// Connect MongoDB
+connectDatabase();
+
+// Routers Middleware
 app.use("/api", routers);
 
-app.use(express.static(path.join(__dirname, "public")));
+// Error Handler
+app.use(customErrorHandler);
 
-const PORT = process.env.PORT;
+// Static Files
+app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
   res.send("Server is ready");

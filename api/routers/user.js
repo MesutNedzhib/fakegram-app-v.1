@@ -1,18 +1,20 @@
 const express = require("express");
 const {
-  createUser,
-  getUserById,
-  getUsers,
+  getAllUsers,
+  getSingleUser,
   setFollow,
   setUnfollow,
 } = require("../controllers/user");
+const { getAccessToRoute } = require("../middlewares/authorization/auth");
+const {
+  checkUserIsExist,
+} = require("../middlewares/database/databaseErrorHandler");
 
 const router = express.Router();
 
-router.post("/create-user", createUser);
-router.post("/get-users", getUsers);
-router.post("/get-user-by-id", getUserById);
-router.post("/set-follow", setFollow);
-router.post("/set-unfollow", setUnfollow);
+router.get("/", getAllUsers);
+router.get("/:id", checkUserIsExist, getSingleUser);
+router.get("/:id/follow", [getAccessToRoute, checkUserIsExist], setFollow);
+router.get("/:id/unfollow", [getAccessToRoute, checkUserIsExist], setUnfollow);
 
 module.exports = router;

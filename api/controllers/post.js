@@ -1,137 +1,106 @@
 const expressAsyncHandler = require("express-async-handler");
-const Post = require("../models/PostModel");
+const Post = require("../models/Post");
+const CustomError = require("../helpers/error/CustomError");
+const User = require("../models/User");
 
-const imageFileUpload = expressAsyncHandler(async (req, res) => {
-  // res.status(200).json({
-  //   message: "success upload",
-  // });
-  // let fileArray = [];
-  // req.files.forEach((el) => {
-  //   fileArray.push(el.originalname);
-  // });
+const createPost = expressAsyncHandler(async (req, res, next) => {
+  const { content } = req.body;
+
+  const user = await User.findById(req.user.id);
+
+  const post = await Post.create({
+    content,
+    imageUrl: req.savedPostImage,
+    user: user._id,
+    user_name: user.name,
+    user_imageUrl: user.imageUrl,
+  });
 
   res.status(200).json({
     success: true,
-    message: "Success Upload",
-    // data: fileArray,
+    data: post,
   });
 });
 
-const uploadPost = expressAsyncHandler(async (req, res) => {
-  const { _userId, _userImageUrl, _username, imageUrl, description } =
-    req.body.data;
-
-  const createPost = await Post.create({
-    _userId,
-    _userImageUrl,
-    _username,
-    imageUrl,
-    description,
+const getAllPosts = expressAsyncHandler(async (req, res, next) => {
+  const posts = await Post.find();
+  res.status(200).json({
+    success: true,
+    count: posts.length,
+    data: posts,
   });
-
-  if (createPost) {
-    res.status(200).json({
-      success: true,
-      message: "Successfully Created Post",
-      data: createPost,
-    });
-  } else {
-    res.status(500).json({
-      success: false,
-      message: "Unsuccessfully Created Post",
-    });
-  }
 });
 
-const getPosts = expressAsyncHandler(async (req, res) => {
-  const { following } = req.body.data;
+const getUserPosts = expressAsyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
 
-  let newBack = [];
+  const following = user.following;
+  following.push(req.user.id);
+
+  let userPosts = [];
+
   for (let id of following) {
-    const postData = await Post.find({ _userId: id });
-    if (postData) {
-      newBack = newBack.concat(postData);
-    }
+    const postData = await Post.find({ user: id }).populate("comments");
+    userPosts = userPosts.concat(postData);
   }
 
-  newBack.sort((a, b) => {
+  userPosts.sort((a, b) => {
     return new Date(b.createdAt) - new Date(a.createdAt);
   });
 
   res.status(200).json({
     success: true,
-    message: "GET POSTS",
-    data: newBack,
-  });
-});
-const setCommentToPost = expressAsyncHandler(async (req, res) => {
-  const { _postId, _userId, _username, _userImageUrl, comment, createdAt } =
-    req.body.data;
-
-  const handlePost = await Post.findByIdAndUpdate(
-    { _id: _postId },
-    {
-      $push: {
-        comments: {
-          _userId,
-          _username,
-          _userImageUrl,
-          comment,
-          createdAt,
-        },
-      },
-    }
-  );
-
-  await handlePost.save();
-
-  res.status(200).json({
-    success: true,
-    message: "GET Comments",
-    data: handlePost,
+    data: userPosts,
   });
 });
 
-const setLikeToPost = expressAsyncHandler(async (req, res) => {
-  const { _postId, currentUserId } = req.body.data;
-  const handlePost = await Post.findOne({ _id: _postId });
+const likeUnlikePost = expressAsyncHandler(async (req, res, next) => {
+  const post_id = req.params.id;
 
-  if (!handlePost.likes.includes(currentUserId)) {
-    handlePost.likes.push(currentUserId);
+  const post = await Post.findById(post_id);
+
+  if (post.likes.includes(req.user.id)) {
+    const index = post.likes.indexOf(req.user.id);
+    post.likes.splice(index, 1);
+    post.likeCount = post.likes.length;
   } else {
-    handlePost.likes.splice(handlePost.likes.indexOf(currentUserId), 1);
+    post.likes.push(req.user.id);
+    post.likeCount = post.likes.length;
   }
 
-  await handlePost.save();
+  await post.save();
 
   res.status(200).json({
     success: true,
-    message: "GET Likes",
-    data: handlePost,
+    data: post,
   });
 });
 
-const getPostsByUserId = expressAsyncHandler(async (req, res) => {
-  const _userId = req.params.id;
+const getSingleUserPosts = expressAsyncHandler(async (req, res, next) => {
+  const { id } = req.params;
 
-  const handlePost = await Post.find({ _userId: _userId });
+  const userPosts = await Post.find({ user: id });
+  if (!userPosts) {
+    return next(
+      new CustomError("There is no such posts with that user id", 400)
+    );
+  }
 
-  handlePost.sort((x, y) => {
+  userPosts.sort((x, y) => {
     return new Date(y.createdAt) - new Date(x.createdAt);
   });
 
   res.status(200).json({
     success: true,
-    message: "GET Likes",
-    data: handlePost,
+    count: userPosts.length,
+    data: userPosts,
   });
 });
 
 module.exports = {
-  imageFileUpload,
-  uploadPost,
-  getPosts,
-  setCommentToPost,
-  setLikeToPost,
-  getPostsByUserId,
+  createPost,
+  likeUnlikePost,
+  getUserPosts,
+  getAllPosts,
+  getSingleUserPosts,
 };

@@ -1,7 +1,7 @@
 import {
-  CREATE_USER_FAIL,
-  CREATE_USER_REQUEST,
-  CREATE_USER_SUCCESS,
+  LOGIN_FAIL,
+  LOGIN_REQUEST,
+  LOGIN_SUCCESS,
   IMAGE_FILE_UPLOAD_FAIL,
   IMAGE_FILE_UPLOAD_REQUEST,
   IMAGE_FILE_UPLOAD_SUCCESS,
@@ -17,20 +17,22 @@ import {
 } from "../constants/userConstants";
 import axios from "axios";
 
-export const createUser = (profileObj) => async (dispatch) => {
-  const dataForSend = {
+export const login = (profileObj) => async (dispatch) => {
+  const information = {
     name: profileObj.name,
     email: profileObj.email,
     imageUrl: profileObj.imageUrl,
   };
-  dispatch({ type: CREATE_USER_REQUEST });
+  dispatch({ type: LOGIN_REQUEST });
+
   try {
-    const { data } = await axios.post("/api/user/create-user", { dataForSend });
-    dispatch({ type: CREATE_USER_SUCCESS, payload: data.data });
-    localStorage.setItem("user", JSON.stringify(data.data));
+    const { data } = await axios.post("/api/auth/login", information);
+
+    dispatch({ type: LOGIN_SUCCESS, payload: data });
+    // localStorage.setItem("user", JSON.stringify(data.data));
   } catch (error) {
     dispatch({
-      type: CREATE_USER_FAIL,
+      type: LOGIN_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
@@ -46,7 +48,7 @@ export const getUserById = (_userId) => async (dispatch) => {
       data: { _userId },
     });
     if (data) {
-      dispatch({ type: CREATE_USER_SUCCESS, payload: data.data });
+      dispatch({ type: LOGIN_SUCCESS, payload: data.data });
       localStorage.setItem("user", JSON.stringify(data.data));
     }
   } catch (error) {

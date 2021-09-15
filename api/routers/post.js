@@ -1,20 +1,37 @@
 const express = require("express");
+const { getAccessToRoute } = require("../middlewares/authorization/auth");
 const {
-  imageFileUpload,
-  uploadPost,
-  getPosts,
-  setCommentToPost,
-  setLikeToPost,
-  getPostsByUserId,
+  createPost,
+  likeUnlikePost,
+  getUserPosts,
+  getAllPosts,
+  getSingleUserPosts,
 } = require("../controllers/post");
-const { upload } = require("../helpers/multerImageUpload/multerImageUpload");
-const router = express.Router();
+const postImageUpload = require("../middlewares/libraries/imageFileUpload");
+const {
+  checkPostIsExist,
+} = require("../middlewares/database/databaseErrorHandler");
+const comment = require("./comment");
 
-router.post("/image-file-upload", upload.single("image"), imageFileUpload);
-router.post("/upload-post", uploadPost);
-router.post("/get-posts", getPosts);
-router.get("/get-posts-by-user-id/:id", getPostsByUserId);
-router.post("/set-comment", setCommentToPost);
-router.post("/set-like", setLikeToPost);
+const router = express.Router();
+router.get("/get-user-posts", getAccessToRoute, getUserPosts);
+router.post(
+  "/",
+  getAccessToRoute,
+  postImageUpload.single("post_image"),
+  createPost
+);
+
+router.get("/", getAllPosts);
+router.get("/:id", getSingleUserPosts);
+
+router.get(
+  "/:id/like-unlike",
+  [getAccessToRoute, checkPostIsExist],
+  likeUnlikePost
+);
+
+// api/post/41894541/comment
+router.use("/:post_id/comment", checkPostIsExist, comment);
 
 module.exports = router;

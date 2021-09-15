@@ -1,7 +1,7 @@
 import {
-  CREATE_USER_FAIL,
-  CREATE_USER_REQUEST,
-  CREATE_USER_SUCCESS,
+  LOGIN_FAIL,
+  LOGIN_REQUEST,
+  LOGIN_SUCCESS,
   USER_LOGOUT,
   GET_RANDOM_USERS_REQUEST,
   GET_RANDOM_USERS_SUCCESS,
@@ -10,11 +10,11 @@ import {
 
 export const userReducer = (state = { user: null }, action) => {
   switch (action.type) {
-    case CREATE_USER_REQUEST:
+    case LOGIN_REQUEST:
       return { loading: true };
-    case CREATE_USER_SUCCESS:
+    case LOGIN_SUCCESS:
       return { loading: false, user: action.payload };
-    case CREATE_USER_FAIL:
+    case LOGIN_FAIL:
       return { loading: false, error: action.payload };
     case USER_LOGOUT:
       return { user: null };

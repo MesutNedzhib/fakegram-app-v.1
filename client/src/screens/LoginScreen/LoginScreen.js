@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import "./LoginScreen.scss";
 import { GoogleLogin } from "react-google-login";
 import { useHistory } from "react-router-dom";
-import { createUser, getUserById } from "../../actions/userActions";
+import { login } from "../../actions/userActions";
 
 function LoginScreen() {
   const history = useHistory();
@@ -13,14 +13,13 @@ function LoginScreen() {
 
   const responseGoogle = (response) => {
     if (response.profileObj) {
-      dispatch(createUser(response.profileObj));
+      dispatch(login(response.profileObj));
     }
   };
 
   useEffect(() => {
     if (user) {
-      dispatch(getUserById(user._id));
-      history.push("/hp");
+      history.push("/");
     }
   }, [user, history, dispatch]);
 

@@ -1,144 +1,78 @@
 const expressAsyncHandler = require("express-async-handler");
-const User = require("../models/UserModel");
+const User = require("../models/User");
+const CustomError = require("../helpers/error/CustomError");
 
-const createUser = expressAsyncHandler(async (req, res) => {
-  const { name, email, imageUrl } = req.body.dataForSend;
-
-  const isExist = await User.findOne({ email: email });
-
-  if (isExist) {
-    res.status(200).json({
-      message: "success",
-      data: {
-        _id: isExist._id,
-        name: isExist.name,
-        email: isExist.email,
-        imageUrl: isExist.imageUrl,
-      },
-    });
-  } else {
-    const user = new User({
-      name,
-      email,
-      imageUrl,
-      posts: [],
-    });
-
-    const createdUser = await user.save();
-
-    res.status(200).json({
-      message: "success",
-      data: {
-        _id: createdUser._id,
-        name: createdUser.name,
-        email: createdUser.email,
-        imageUrl: createdUser.imageUrl,
-      },
-    });
-  }
-});
-
-const getUserById = expressAsyncHandler(async (req, res) => {
-  const { _userId } = req.body.data;
-  const user = await User.findById({ _id: _userId });
-  if (user) {
-    res.status(200).json({
-      message: "Get User By Id - Success",
-      data: user,
-    });
-  } else {
-    res.status(400).json({
-      message: "Get User By Id - Fail",
-    });
-  }
-});
-
-const getUsers = expressAsyncHandler(async (req, res) => {
-  const { _userId } = req.body.data;
-
-  const users = await User.find({});
-
-  const withoutCurrentIdArray = users.filter((x) => x._id != _userId);
-
-  const backUsers = [];
-
-  if (users) {
-    for (let i = 0; i < withoutCurrentIdArray.length; i++) {
-      const randomIndex = Math.floor(
-        Math.random() * withoutCurrentIdArray.length
-      );
-      if (backUsers.includes(withoutCurrentIdArray[randomIndex])) {
-      } else {
-        backUsers.push(withoutCurrentIdArray[randomIndex]);
-      }
-    }
-  }
+const getSingleUser = expressAsyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
 
   res.status(200).json({
-    message: "Get Random Users - Success",
-    data: backUsers,
+    success: true,
+    data: user,
   });
 });
 
-const setFollow = expressAsyncHandler(async (req, res) => {
-  const { _userId, _currentUserId } = req.body.data;
-  const handleCurrentUserFollowing = await User.findOne({
-    _id: _currentUserId,
-  });
-  const handleUserFollowing = await User.findOne({ _id: _userId });
-
-  if (!handleCurrentUserFollowing.following.includes(_userId)) {
-    handleCurrentUserFollowing.following.push(_userId);
-  } else {
-    handleCurrentUserFollowing.following.splice(
-      handleCurrentUserFollowing.following.indexOf(_userId),
-      1
-    );
-  }
-
-  if (!handleUserFollowing.followers.includes(_currentUserId)) {
-    handleUserFollowing.followers.push(_currentUserId);
-  } else {
-    handleUserFollowing.followers.splice(
-      handleUserFollowing.followers.indexOf(_currentUserId),
-      1
-    );
-  }
-
-  await handleUserFollowing.save();
-  await handleCurrentUserFollowing.save();
+const getAllUsers = expressAsyncHandler(async (req, res, next) => {
+  const users = await User.find();
 
   res.status(200).json({
-    message: "Set Following - Success",
-    data: handleUserFollowing,
+    success: true,
+    data: users,
   });
 });
 
-const setUnfollow = expressAsyncHandler(async (req, res) => {
-  const { _userId, _currentUserId } = req.body.data;
-  const handleFollowing = await User.findOne({ _id: _userId });
+const setFollow = expressAsyncHandler(async (req, res, next) => {
+  const { id } = req.params;
 
-  if (!handleFollowing.following.includes(_currentUserId)) {
-    handleFollowing.following.push(_currentUserId);
-  } else {
-    handleFollowing.following.splice(
-      handleFollowing.following.indexOf(_currentUserId),
-      1
+  const user = await User.findById(id);
+  const mainUser = await User.findById(req.user.id);
+
+  if (user.followers.includes(req.user.id)) {
+    return next(new CustomError("You already follow this user", 400));
+  }
+
+  user.followers.push(req.user.id);
+  mainUser.following.push(id);
+
+  await user.save();
+  await mainUser.save();
+
+  res.status(200).json({
+    success: true,
+    data: user,
+  });
+});
+
+const setUnfollow = expressAsyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+
+  const user = await User.findById(id);
+  const mainUser = await User.findById(req.user.id);
+
+  if (!user.followers.includes(req.user.id)) {
+    return next(
+      new CustomError("You can not unfollow operation for this user", 400)
     );
   }
 
-  await handleFollowing.save();
+  const index = user.followers.indexOf(req.user.id);
+  user.followers.splice(index, 1);
+
+  const mainIndex = mainUser.following.indexOf(id);
+  mainUser.following.splice(mainIndex, 1);
+
+  await user.save();
+  await mainUser.save();
 
   res.status(200).json({
-    message: "Set Unfollow - Success",
-    data: handleFollowing,
+    success: true,
+    data: user,
   });
 });
 
 module.exports = {
-  createUser,
-  getUserById,
-  getUsers,
+  getSingleUser,
+  getAllUsers,
   setFollow,
   setUnfollow,
 };
