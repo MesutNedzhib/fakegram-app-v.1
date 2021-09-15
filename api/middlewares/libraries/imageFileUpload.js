@@ -1,7 +1,6 @@
 const multer = require("multer");
 const path = require("path");
 const CustomError = require("../../helpers/error/CustomError");
-
 // Storage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -10,9 +9,14 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     // File - Mimetype - image/png
-
     const extension = file.mimetype.split("/")[1];
-    req.savedPostImage = "image_" + req.user.id + "." + extension;
+    req.savedPostImage =
+      "image_" +
+      req.user.id +
+      "_" +
+      Math.floor(Math.random() * 1000 * 60) +
+      "." +
+      extension;
     cb(null, req.savedPostImage);
   },
 });

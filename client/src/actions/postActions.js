@@ -4,35 +4,30 @@ import {
   GET_USER_POSTS_FAIL,
   GET_USER_POSTS_REQUEST,
   GET_USER_POSTS_SUCCESS,
-  POST_UPLOAD_FAIL,
-  POST_UPLOAD_REQUEST,
-  POST_UPLOAD_SUCCESS,
+  CREATE_POST_FAIL,
+  CREATE_POST_REQUEST,
+  CREATE_POST_SUCCESS,
   SET_COMMENT_FAIL,
   SET_COMMENT_REQUEST,
   SET_LIKE_FAIL,
   SET_LIKE_REQUEST,
 } from "../constants/postConstants";
 
-export const postUploadByUserId = (postData) => async (dispatch) => {
-  dispatch({
-    type: POST_UPLOAD_REQUEST,
-  });
-  try {
-    const { data } = await axios.post("/api/post/upload-post", {
-      data: postData,
-    });
-
-    dispatch({
-      type: POST_UPLOAD_SUCCESS,
-      payload: data.data,
-    });
-  } catch (err) {
-    dispatch({
-      type: POST_UPLOAD_FAIL,
-      payload: err.message,
-    });
-  }
-};
+export const createPost =
+  ({ accessToken, formData }) =>
+  async () => {
+    try {
+      const { data } = await axios.post("/api/post", formData, {
+        headers: {
+          Authorization: `Bearer: ${accessToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return data;
+    } catch (err) {
+      return err.message;
+    }
+  };
 
 export const getUserPosts = (accessToken) => async (dispatch) => {
   dispatch({
@@ -79,7 +74,7 @@ export const addCommentToPost =
     }
   };
 
-export const setLikeUnlikeToPost =
+export const setLikeToPost =
   ({ id, accessToken }) =>
   async (dispatch) => {
     dispatch({

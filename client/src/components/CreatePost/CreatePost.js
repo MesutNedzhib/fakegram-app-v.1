@@ -5,45 +5,44 @@ import CloseIcon from "@material-ui/icons/Close";
 import ImageUpload from "image-upload-react";
 import "image-upload-react/dist/index.css";
 import { imageFileUpload } from "../../actions/userActions";
-import { postUploadByUserId } from "../../actions/postActions";
+import { createPost } from "../../actions/postActions";
 import { Button } from "@material-ui/core";
+import axios from "axios";
 
 function CreatePost({ setCreatePost }) {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
-  // const { postUploadLoading, uploadedPostError, uploadedPost } = useSelector(
-  //   (state) => state.uploadedPost
-  // );
 
-  // useEffect(() => {
-  //   if (uploadedPost) {
-  //     setCreatePost(false);
-  //   }
-  // }, [uploadedPost]);
+  const user = useSelector((state) => state.user.user);
 
   const [imageSrc, setImageSrc] = useState();
   const [fileState, setFileState] = useState();
-  const [description, setDescription] = useState();
+  const [content, setContent] = useState(undefined);
 
   const handleImageSelect = (e) => {
     setImageSrc(URL.createObjectURL(e.target.files[0]));
     setFileState(e.target.files[0]);
   };
 
-  const publishBtn = () => {
-    const data = {};
+  const publishBtn = async () => {
     const formData = new FormData();
-    formData.append("image", fileState);
-    dispatch(imageFileUpload(formData));
-    data._userId = user.user._id;
-    data._userImageUrl = user.user.imageUrl;
-    data._username = user.user.name;
-    data.imageUrl = fileState.name;
-    data.description = description;
-    dispatch(postUploadByUserId(data));
+    formData.append("content", content);
+    formData.append("post_image", fileState);
 
-    // setCreatePost(false);
+    try {
+      const { data } = await axios.post("/api/post", formData, {
+        headers: {
+          Authorization: `Bearer: ${user?.access_token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      if (data) {
+        setCreatePost(false);
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
   };
+
   return (
     <div className="createPost">
       <div className="createPost-container">
@@ -68,7 +67,7 @@ function CreatePost({ setCreatePost }) {
           <div className="createPost-description">
             <h4>Description:</h4>
             <textarea
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(e) => setContent(e.target.value)}
               name=""
               id=""
               rows="5"
@@ -76,7 +75,7 @@ function CreatePost({ setCreatePost }) {
             ></textarea>
           </div>
         </div>
-        {imageSrc && description ? (
+        {imageSrc && content ? (
           <Button
             color="primary"
             variant="contained"

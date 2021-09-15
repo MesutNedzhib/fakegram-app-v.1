@@ -3,8 +3,8 @@ import {
   GET_USER_POSTS_FAIL,
   GET_USER_POSTS_REQUEST,
   GET_USER_POSTS_SUCCESS,
-  POST_UPLOAD_REQUEST,
-  POST_UPLOAD_SUCCESS,
+  CREATE_POST_REQUEST,
+  CREATE_POST_SUCCESS,
 } from "../constants/postConstants";
 
 export const postsReducer = (state = { posts: null }, action) => {
@@ -24,9 +24,9 @@ export const postsReducer = (state = { posts: null }, action) => {
 
 export const uploadPostReducer = (state = { uploadedPost: null }, action) => {
   switch (action.type) {
-    case POST_UPLOAD_REQUEST:
+    case CREATE_POST_REQUEST:
       return { postUploadLoading: true };
-    case POST_UPLOAD_SUCCESS:
+    case CREATE_POST_SUCCESS:
       return { postUploadLoading: false, uploadedPost: action.payload };
     case GET_USER_POSTS_FAIL:
       return { postUploadLoading: false, uploadedPostError: action.payload };

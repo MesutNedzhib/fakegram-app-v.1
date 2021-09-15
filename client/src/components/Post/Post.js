@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Post.scss";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  addCommentToPost,
-  setLikeUnlikeToPost,
-} from "../../actions/postActions";
+import { addCommentToPost, setLikeToPost } from "../../actions/postActions";
 import * as timeago from "timeago.js";
 import Badge from "@material-ui/core/Badge";
 import Button from "@material-ui/core/Button";
@@ -19,8 +16,8 @@ import Comment from "../Comment/Comment";
 function Post({ postData }) {
   const { user } = useSelector((state) => state.user);
   const history = useHistory();
-
   const dispatch = useDispatch();
+
   const [commentValue, setCommentValue] = useState();
 
   const setCommentDataHandle = () => {
@@ -35,9 +32,9 @@ function Post({ postData }) {
       setCommentValue("");
     }
   };
-  const setLikeUnlikeToPostHandle = () => {
+  const setLikeToPostHandle = () => {
     dispatch(
-      setLikeUnlikeToPost({
+      setLikeToPost({
         id: postData._id,
         accessToken: user?.access_token,
       })
@@ -58,14 +55,7 @@ function Post({ postData }) {
         <div className="post-body">
           <div
             className="post-image"
-            onDoubleClick={() =>
-              dispatch(
-                setLikeUnlikeToPost({
-                  id: postData._id,
-                  accessToken: user?.access_token,
-                })
-              )
-            }
+            onDoubleClick={() => setLikeToPostHandle()}
           >
             <img src={`../uploads/${postData.imageUrl}`} alt="" />
           </div>
@@ -74,7 +64,7 @@ function Post({ postData }) {
               <Badge
                 badgeContent={postData?.likeCount}
                 color="error"
-                onClick={() => setLikeUnlikeToPostHandle()}
+                onClick={() => setLikeToPostHandle()}
               >
                 <FavoriteIcon />
               </Badge>
@@ -82,7 +72,7 @@ function Post({ postData }) {
               <Badge
                 badgeContent={postData?.likeCount}
                 color="error"
-                onClick={() => setLikeUnlikeToPostHandle()}
+                onClick={() => setLikeToPostHandle()}
               >
                 <FavoriteBorderIcon />
               </Badge>
