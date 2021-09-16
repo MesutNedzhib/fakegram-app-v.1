@@ -12,23 +12,17 @@ function Navbar() {
   const dispatch = useDispatch();
   const history = useHistory();
   const [createPostState, setCreatePostState] = useState(false);
-  const { uploadedPost } = useSelector((state) => state.uploadedPost);
   const { user } = useSelector((state) => state.user);
 
   const logout = () => {
     dispatch(userLogout());
   };
 
-  useEffect(() => {
-    if (uploadedPost) {
-      setCreatePostState(false);
-    }
-  }, [uploadedPost]);
   return (
     <div className="navbar">
       <div className="navbar-container">
         <div className="navbar-left-side">
-          <h1 style={{ cursor: "pointer" }} onClick={() => history.push("/hp")}>
+          <h1 style={{ cursor: "pointer" }} onClick={() => history.push("/")}>
             fake<span style={{ color: "orange" }}>gram</span>
           </h1>
         </div>

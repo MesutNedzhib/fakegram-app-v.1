@@ -22,15 +22,4 @@ export const postsReducer = (state = { posts: null }, action) => {
   }
 };
 
-export const uploadPostReducer = (state = { uploadedPost: null }, action) => {
-  switch (action.type) {
-    case CREATE_POST_REQUEST:
-      return { postUploadLoading: true };
-    case CREATE_POST_SUCCESS:
-      return { postUploadLoading: false, uploadedPost: action.payload };
-    case GET_USER_POSTS_FAIL:
-      return { postUploadLoading: false, uploadedPostError: action.payload };
-    default:
-      return state;
-  }
-};
+

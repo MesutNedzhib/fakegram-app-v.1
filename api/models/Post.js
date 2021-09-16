@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const User = require("./User");
 
 const Schema = mongoose.Schema;
 
@@ -48,6 +49,19 @@ const PostSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+});
+
+// Mongoose pre hooks
+PostSchema.pre("save", async function (next) {
+  try {
+    const user = await User.findById(this.user);
+    user.posts.push(this._id);
+
+    await user.save();
+    next();
+  } catch (err) {
+    return next(err);
+  }
 });
 
 module.exports = mongoose.model("Post", PostSchema);

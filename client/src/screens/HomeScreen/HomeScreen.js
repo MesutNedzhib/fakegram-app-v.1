@@ -6,6 +6,8 @@ import "./HomeScreen.scss";
 import LoadingBox from "../../components/LoadingBox/LoadingBox";
 import MessageBox from "../../components/MessageBox/MessageBox";
 import { getUserPosts } from "../../actions/postActions";
+import { io } from "socket.io-client";
+import { GET_USER_POSTS_SUCCESS } from "../../constants/postConstants";
 
 function HomeScreen() {
   const history = useHistory();
@@ -24,6 +26,20 @@ function HomeScreen() {
       dispatch(getUserPosts(user?.access_token));
     }
   }, [user, history, dispatch]);
+
+  useEffect(() => {
+    socket.current = io("ws://localhost:8900");
+  }, []);
+
+  useEffect(() => {
+    socket.current.emit("addPosts", posts);
+    socket.current.on("newPosts", (newPosts) => {
+      dispatch({
+        type: GET_USER_POSTS_SUCCESS,
+        payload: newPosts,
+      });
+    });
+  }, [posts, dispatch]);
 
   return (
     <div className="homeScreen">
