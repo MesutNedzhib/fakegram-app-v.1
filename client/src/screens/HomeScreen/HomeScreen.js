@@ -20,7 +20,7 @@ function HomeScreen() {
   const socket = useRef();
 
   const { user } = useSelector((state) => state.user);
-  let { suggUsers } = useSelector((state) => state.suggUsers);
+  // let { suggUsers } = useSelector((state) => state.suggUsers);
   // const { posts } = useSelector((state) => state.posts);
   const [posts, setPosts] = useState(null);
 
@@ -65,7 +65,6 @@ function HomeScreen() {
     socket.current.on("newPost", (newPost) => {
       setPosts(newPost);
     });
-
     socket.current.on("updatedPost", (updatedPost) => {
       setPosts(updatedPost);
     });
