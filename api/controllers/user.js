@@ -1,7 +1,6 @@
 const expressAsyncHandler = require("express-async-handler");
 const User = require("../models/User");
 const CustomError = require("../helpers/error/CustomError");
-const collect = require("collect.js");
 
 const getSingleUser = expressAsyncHandler(async (req, res, next) => {
   const { id } = req.params;

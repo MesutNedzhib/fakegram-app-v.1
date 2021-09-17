@@ -13,7 +13,11 @@ const {
 
 const router = express.Router();
 
-router.get("/random-suggested-users", getAccessToRoute,getRandomSuggestedUsers);
+router.get(
+  "/random-suggested-users",
+  getAccessToRoute,
+  getRandomSuggestedUsers
+);
 router.get("/", getAllUsers);
 router.get("/:id", checkUserIsExist, getSingleUser);
 router.get("/:id/follow", [getAccessToRoute, checkUserIsExist], setFollow);

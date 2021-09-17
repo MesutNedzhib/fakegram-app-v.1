@@ -55,10 +55,14 @@ const PostSchema = new Schema({
 PostSchema.pre("save", async function (next) {
   try {
     const user = await User.findById(this.user);
-    user.posts.push(this._id);
+    if (user.posts.includes(this._id)) {
+      next();
+    } else {
+      user.posts.push(this._id);
 
-    await user.save();
-    next();
+      await user.save();
+      next();
+    }
   } catch (err) {
     return next(err);
   }

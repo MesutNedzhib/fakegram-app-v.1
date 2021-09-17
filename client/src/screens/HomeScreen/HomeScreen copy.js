@@ -13,7 +13,10 @@ import Post from "../../components/Post/Post";
 import "./HomeScreen.scss";
 import { io } from "socket.io-client";
 import { GET_RANDOM_USERS_SUCCESS } from "../../constants/userConstants";
-import { GET_POSTS_SUCCESS } from "../../constants/postConstants";
+import {
+  GET_POSTS_SUCCESS,
+  GET_USER_POSTS_SUCCESS,
+} from "../../constants/postConstants";
 import LoadingBox from "../../components/LoadingBox/LoadingBox";
 import MessageBox from "../../components/MessageBox/MessageBox";
 
@@ -48,9 +51,11 @@ function HomeScreen() {
   useEffect(() => {
     socket.current.emit("addPosts", posts);
     socket.current.on("newPosts", (newPosts) => {
+      let ff = posts;
+      console.log(ff);
       dispatch({
-        type: GET_POSTS_SUCCESS,
-        payload: newPosts,
+        type: GET_USER_POSTS_SUCCESS,
+        payload: posts,
       });
     });
   }, [posts, dispatch]);

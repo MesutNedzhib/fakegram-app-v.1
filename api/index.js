@@ -32,8 +32,7 @@ app.use(customErrorHandler);
 // Static Files
 app.use(express.static(path.join(__dirname, "public")));
 
-// Connect Socket
-// connectSocket();
+connectSocket();
 
 app.get("/", (req, res) => {
   res.send("Server is ready");

@@ -34,7 +34,14 @@ const connectSocket = () => {
             commentCount: change.fullDocument.commentCount,
           };
 
-          io.emit("newPosts", newPost);
+          currentPosts.push(newPost);
+
+          currentPosts.sort((x, y) => {
+            return new Date(y.createdAt) - new Date(x.createdAt);
+          });
+
+          io.emit("newPost", currentPosts);
+
           break;
 
         case "update":
@@ -44,14 +51,14 @@ const connectSocket = () => {
             likeCount: change.fullDocument.likeCount,
           };
 
-          // for (let post of currentPosts) {
-          //   if (post._id == updatedPost._id) {
-          //     post.likes = updatedPost.likes;
-          //     post.likeCount = updatedPost.likeCount;
-          //   }
-          // }
+          for (let post of currentPosts) {
+            if (post._id == updatedPost._id) {
+              post.likes = updatedPost.likes;
+              post.likeCount = updatedPost.likeCount;
+            }
+          }
 
-          io.emit("updatedPost", updatedPost);
+          io.emit("updatedPost", currentPosts);
           break;
       }
     });
@@ -74,7 +81,14 @@ const connectSocket = () => {
             createdAt: change.fullDocument.createdAt,
           };
 
-          io.emit("newComment", newComment);
+          for (let post of currentPosts) {
+            if (post._id == newComment.post) {
+              post.comments.push(newComment);
+              post.commentCount = post.comments.length;
+            }
+          }
+
+          io.emit("newComment", currentPosts);
           break;
       }
     });

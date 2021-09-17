@@ -10,28 +10,69 @@ import { GET_USER_POSTS_SUCCESS } from "../../constants/postConstants";
 import { getRandomSuggestedUsers } from "../../actions/userActions";
 import SuggestedUsers from "../../components/SuggestedUsers/SuggestedUsers";
 import { GET_RANDOM_USERS_SUCCESS } from "../../constants/userConstants";
+import { io } from "socket.io-client";
+import axios from "axios";
 
 function HomeScreen() {
   const history = useHistory();
   const dispatch = useDispatch();
 
+  const socket = useRef();
+
   const { user } = useSelector((state) => state.user);
   let { suggUsers } = useSelector((state) => state.suggUsers);
-  let { posts } = useSelector((state) => state.posts);
-  const [pss, setPss] = useState(null);
+  // const { posts } = useSelector((state) => state.posts);
+  const [posts, setPosts] = useState(null);
 
   useEffect(() => {
     if (!user) {
       history.push("/auth");
     } else {
-      if (!posts) {
-        dispatch(getUserPosts(user?.access_token));
+      // if (!suggUsers) {
+      //   dispatch(getRandomSuggestedUsers(user?.access_token));
+      // }
+
+      async function fetchData() {
+        await axios
+          .get("/api/post/get-user-posts", {
+            headers: {
+              Authorization: `Bearer: ${user?.access_token}`,
+            },
+          })
+          .then(function (res) {
+            setPosts(res.data.data);
+          })
+          .catch(function (error) {
+            if (error.response.status === 401) {
+              localStorage.removeItem("user");
+              window.location = "/auth";
+            }
+          });
       }
-      if (!suggUsers) {
-        dispatch(getRandomSuggestedUsers(user?.access_token));
+      if (!posts) {
+        fetchData();
       }
     }
-  }, [user, history, dispatch, posts, suggUsers]);
+  }, [user, history, dispatch, posts]);
+
+  useEffect(() => {
+    socket.current = io("ws://localhost:8900");
+  }, []);
+
+  useEffect(() => {
+    socket.current.emit("addPosts", posts);
+
+    socket.current.on("newPost", (newPost) => {
+      setPosts(newPost);
+    });
+
+    socket.current.on("updatedPost", (updatedPost) => {
+      setPosts(updatedPost);
+    });
+    socket.current.on("newComment", (newComment) => {
+      setPosts(newComment);
+    });
+  });
 
   return (
     <div className="homeScreen">
@@ -44,14 +85,14 @@ function HomeScreen() {
             posts?.map((item, index) => <Post key={index} postData={item} />)
           )}
         </div>
-        <div className="suggestions-side">
+        {/* <div className="suggestions-side">
           {!suggUsers ? <LoadingBox /> : ""}
           {suggUsers
             ? suggUsers?.map((item, index) => (
                 <SuggestedUsers key={index} data={item} />
               ))
             : ""}
-        </div>
+        </div> */}
       </div>
     </div>
   );
