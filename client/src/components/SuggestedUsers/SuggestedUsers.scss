@@ -1,0 +1,25 @@
+.suggested-user {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+
+  .suggested-user-info {
+    display: flex;
+    align-items: center;
+
+    .MuiAvatar-root {
+      width: 30px;
+      height: 30px;
+      margin-right: 5px;
+    }
+  }
+
+  .suggested-user-follow-btn {
+    margin-left: 20px;
+    button {
+      color: blue;
+      font-size: 14px !important;
+    }
+  }
+}

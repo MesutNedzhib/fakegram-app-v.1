@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Redirect, useHistory } from "react-router-dom";
 import {
   GET_CURRENT_POST_STATE,
   GET_USER_POSTS_FAIL,
@@ -23,7 +24,7 @@ export const createPost =
           "Content-Type": "multipart/form-data",
         },
       });
-      return data;
+      console.log(data);
     } catch (err) {
       return err.message;
     }
@@ -33,27 +34,37 @@ export const getUserPosts = (accessToken) => async (dispatch) => {
   dispatch({
     type: GET_USER_POSTS_REQUEST,
   });
-  try {
-    const { data } = await axios.get("/api/post/get-user-posts", {
+  // try {
+  await axios
+    .get("/api/post/get-user-posts", {
       headers: {
         Authorization: `Bearer: ${accessToken}`,
       },
+    })
+    .then(function (response) {
+      dispatch({
+        type: GET_USER_POSTS_SUCCESS,
+        payload: response.data.data,
+      });
+    })
+    .catch(function (error) {
+      if (error.response.status == 401) {
+        localStorage.removeItem("user");
+        window.location = "/auth";
+      }
     });
-    dispatch({
-      type: GET_USER_POSTS_SUCCESS,
-      payload: data.data,
-    });
-  } catch (err) {
-    dispatch({
-      type: GET_USER_POSTS_FAIL,
-      payload: err.message,
-    });
-  }
+
+  // } catch (err) {
+  //   dispatch({
+  //     type: GET_USER_POSTS_FAIL,
+  //     payload: err.message,
+  //   });
+  // }
 };
 
 export const addCommentToPost =
   ({ post_id, content, accessToken }) =>
-  async (dispatch) => {
+  async (dispatch, getState) => {
     dispatch({
       type: SET_COMMENT_REQUEST,
     });
@@ -68,7 +79,17 @@ export const addCommentToPost =
         }
       );
 
-      console.log(data);
+      let posts = getState().posts.posts;
+      for (let post of posts) {
+        if (post._id === data.data.post) {
+          post.comments.push(data.data);
+        }
+      }
+
+      dispatch({
+        type: GET_USER_POSTS_SUCCESS,
+        payload: posts,
+      });
     } catch (err) {
       dispatch({ type: SET_COMMENT_FAIL, payload: err.message });
     }
@@ -76,7 +97,7 @@ export const addCommentToPost =
 
 export const setLikeToPost =
   ({ id, accessToken }) =>
-  async (dispatch) => {
+  async (dispatch, getState) => {
     dispatch({
       type: SET_LIKE_REQUEST,
     });
@@ -86,12 +107,18 @@ export const setLikeToPost =
           Authorization: `Bearer: ${accessToken}`,
         },
       });
-      console.log(data);
-      // if (data) {
-      //   dispatch({
-      //     type: GET_CURRENT_POST_STATE,
-      //   });
-      // }
+
+      let posts = getState().posts.posts;
+      for (let post of posts) {
+        if (post._id === data.data._id) {
+          post.likes = data.data.likes;
+          post.likeCount = data.data.likeCount;
+        }
+      }
+      dispatch({
+        type: GET_USER_POSTS_SUCCESS,
+        payload: posts,
+      });
     } catch (err) {
       dispatch({ type: SET_LIKE_FAIL, payload: err.message });
     }

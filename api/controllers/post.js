@@ -2,6 +2,7 @@ const expressAsyncHandler = require("express-async-handler");
 const Post = require("../models/Post");
 const CustomError = require("../helpers/error/CustomError");
 const User = require("../models/User");
+const collect = require("collect.js");
 
 const createPost = expressAsyncHandler(async (req, res, next) => {
   const { content } = req.body;
@@ -38,7 +39,6 @@ const getUserPosts = expressAsyncHandler(async (req, res, next) => {
   following.push(req.user.id);
 
   let userPosts = [];
-
   for (let id of following) {
     const postData = await Post.find({ user: id }).populate("comments");
     userPosts = userPosts.concat(postData);
@@ -47,6 +47,8 @@ const getUserPosts = expressAsyncHandler(async (req, res, next) => {
   userPosts.sort((a, b) => {
     return new Date(b.createdAt) - new Date(a.createdAt);
   });
+
+  let collecion = collect(userPosts).skip(0);
 
   res.status(200).json({
     success: true,

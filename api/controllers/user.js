@@ -1,6 +1,7 @@
 const expressAsyncHandler = require("express-async-handler");
 const User = require("../models/User");
 const CustomError = require("../helpers/error/CustomError");
+const collect = require("collect.js");
 
 const getSingleUser = expressAsyncHandler(async (req, res, next) => {
   const { id } = req.params;
@@ -70,9 +71,31 @@ const setUnfollow = expressAsyncHandler(async (req, res, next) => {
   });
 });
 
+const getRandomSuggestedUsers = expressAsyncHandler(async (req, res, next) => {
+  let users = await User.find().select("name imageUrl followers");
+
+  users = users.filter((x) => x._id != req.user.id);
+
+  let backUsers = [];
+  if (users.length > 0) {
+    for (let i = 0; i < users.length; i++) {
+      const randomIndex = Math.floor(Math.random() * users.length);
+      if (!backUsers.includes(randomIndex)) {
+        backUsers.push(users[randomIndex]);
+      }
+    }
+  }
+
+  res.status(200).json({
+    success: true,
+    data: backUsers,
+  });
+});
+
 module.exports = {
   getSingleUser,
   getAllUsers,
   setFollow,
   setUnfollow,
+  getRandomSuggestedUsers,
 };

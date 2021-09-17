@@ -34,27 +34,24 @@ const connectSocket = () => {
             commentCount: change.fullDocument.commentCount,
           };
 
-          currentPosts.push(newPost);
-          currentPosts.sort((x, y) => {
-            return new Date(y.createdAt) - new Date(x.createdAt);
-          });
-
-          io.emit("newPosts", currentPosts);
+          io.emit("newPosts", newPost);
           break;
 
         case "update":
           const updatedPost = {
             _id: change.fullDocument._id,
+            likes: change.fullDocument.likes,
             likeCount: change.fullDocument.likeCount,
           };
 
-          for (let post of currentPosts) {
-            if (post._id == updatedPost._id) {
-              post.likeCount = updatedPost.likeCount;
-            }
-          }
+          // for (let post of currentPosts) {
+          //   if (post._id == updatedPost._id) {
+          //     post.likes = updatedPost.likes;
+          //     post.likeCount = updatedPost.likeCount;
+          //   }
+          // }
 
-          io.emit("newPosts", currentPosts);
+          io.emit("updatedPost", updatedPost);
           break;
       }
     });
@@ -77,14 +74,31 @@ const connectSocket = () => {
             createdAt: change.fullDocument.createdAt,
           };
 
-          for (let post of currentPosts) {
-            if (post._id == newComment.post) {
-              post.comments.push(newComment);
-              post.commentCount = post.comments.length;
-            }
-          }
+          io.emit("newComment", newComment);
+          break;
+      }
+    });
 
-          io.emit("newPosts", currentPosts);
+    const usersCollection = connection
+      .collection("users")
+      .watch({ fullDocument: "updateLookup" });
+
+    usersCollection.on("change", (change) => {
+      switch (change.operationType) {
+        case "update":
+          const updatedUser = {
+            _id: change.fullDocument._id,
+            followers: change.fullDocument.followers,
+            name: change.fullDocument.name,
+          };
+
+          // for (let user of currentSuggUsers) {
+          //   if (user._id == updatedUser._id) {
+          //     user.followers = updatedUser.followers;
+          //   }
+          // }
+
+          io.emit("newSuggUsers", updatedUser);
           break;
       }
     });
@@ -97,9 +111,9 @@ const connectSocket = () => {
       currentPosts = posts;
     });
 
-    //   socket.on("addSuggUsers", (users) => {
-    //     currentSuggUsers = users;
-    //   });
+    socket.on("addSuggUsers", (suggUsers) => {
+      currentSuggUsers = suggUsers;
+    });
 
     socket.on("disconnect", () => {
       console.log("a user disconnected", socket.id);

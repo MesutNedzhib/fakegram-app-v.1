@@ -4,6 +4,7 @@ const {
   getSingleUser,
   setFollow,
   setUnfollow,
+  getRandomSuggestedUsers,
 } = require("../controllers/user");
 const { getAccessToRoute } = require("../middlewares/authorization/auth");
 const {
@@ -12,6 +13,7 @@ const {
 
 const router = express.Router();
 
+router.get("/random-suggested-users", getAccessToRoute,getRandomSuggestedUsers);
 router.get("/", getAllUsers);
 router.get("/:id", checkUserIsExist, getSingleUser);
 router.get("/:id/follow", [getAccessToRoute, checkUserIsExist], setFollow);

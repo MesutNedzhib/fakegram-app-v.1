@@ -12,61 +12,48 @@ import MessageBox from "../../components/MessageBox/MessageBox";
 function ProfileScreen() {
   const location = useLocation();
   const currentUrl = location.pathname.split("/")[1];
-
-  const [posts, setPosts] = useState(null);
-  const [user, setUser] = useState(null);
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
-      const { data } = await axios.get(
-        `/api/post/get-posts-by-user-id/${currentUrl}`
-      );
-      setPosts(data);
+      const { data } = await axios.get(`/api/user/${currentUrl}`);
+      setUserData(data);
     }
 
     fetchData();
   }, [currentUrl]);
 
-  useEffect(() => {
-    async function fetchData() {
-      const { data } = await axios.post("/api/user/get-user-by-id", {
-        data: { _userId: currentUrl },
-      });
-      setUser(data);
-    }
-
-    fetchData();
-  }, [currentUrl]);
+  const data = userData?.data;
 
   return (
     <div className="profileScreen">
-      {user && posts ? (
+      {userData ? (
         <div className="profileScreen-continer">
           <div className="profileScreen-user-info">
             <div className="user-info-avatar">
               <Avatar
-                src={user?.data?.imageUrl}
+                src={data?.imageUrl}
                 style={{ width: "125px", height: "125px" }}
               />
             </div>
             <div className="user-info-name">
-              <h3>{user?.data?.name}</h3>
+              <h3>{data?.name}</h3>
             </div>
             <div className="user-info-status">
               <span>
-                {posts?.data?.length} <small>POSTS</small>
+                {data?.posts?.length} <small>POSTS</small>
               </span>
               <span>
-                {user?.data?.followers?.length} <small>FOLLOWERS</small>
+                {data?.followers?.length} <small>FOLLOWERS</small>
               </span>
               <span>
-                {user?.data?.following?.length} <small>FOLLOWING</small>
+                {data?.following?.length} <small>FOLLOWING</small>
               </span>
             </div>
           </div>
-          {posts?.data?.length !== 0 ? (
+          {data?.posts?.length !== 0 ? (
             <div className="profileScreen-user-posts">
-              {posts?.data?.map((item, index) => (
+              {data?.posts?.map((item, index) => (
                 <div key={index} className="profileScreen-user-post">
                   <img src={`../uploads/${item.imageUrl}`} alt="" />
                   <div className="profileScreen-user-post-hover">

@@ -10,13 +10,15 @@ function App() {
   return (
     <div className="app">
       <Router>
-        <Route path="/auth" component={LoginScreen} />
         <Switch>
+          <Route path="/auth">
+            <LoginScreen />
+          </Route>
           <Route exact path="/">
             <Navbar />
             <HomeScreen />
           </Route>
-          <Route path="/:id/hp">
+          <Route path="/:id/ps">
             <Navbar />
             <ProfileScreen />
           </Route>

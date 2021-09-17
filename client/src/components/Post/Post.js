@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./Post.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { addCommentToPost, setLikeToPost } from "../../actions/postActions";
@@ -10,28 +10,29 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline";
 import { Avatar } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
-import axios from "axios";
 import Comment from "../Comment/Comment";
 
 function Post({ postData }) {
   const { user } = useSelector((state) => state.user);
+
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const [commentValue, setCommentValue] = useState();
+  const commentInput = useRef(null);
 
   const setCommentDataHandle = () => {
-    if (commentValue.length !== 0) {
+    if (commentInput.length !== 0) {
       dispatch(
         addCommentToPost({
           post_id: postData._id,
-          content: commentValue,
+          content: commentInput.current.value,
           accessToken: user?.access_token,
         })
       );
-      setCommentValue("");
+      commentInput.current.value = "";
     }
   };
+
   const setLikeToPostHandle = () => {
     dispatch(
       setLikeToPost({
@@ -47,7 +48,7 @@ function Post({ postData }) {
         <div
           className="post-header"
           style={{ cursor: "pointer" }}
-          onClick={() => history.push(`/${postData._userId}/hp`)}
+          onClick={() => history.push(`/${postData.user}/ps`)}
         >
           <Avatar src={postData?.user_imageUrl} />
           <h3>{postData.user_name}</h3>
@@ -60,7 +61,7 @@ function Post({ postData }) {
             <img src={`../uploads/${postData.imageUrl}`} alt="" />
           </div>
           <div className="post-status">
-            {postData?.likes?.includes(user?._id) ? (
+            {postData?.likes?.includes(user?.data?._id) ? (
               <Badge
                 badgeContent={postData?.likeCount}
                 color="error"
@@ -83,9 +84,8 @@ function Post({ postData }) {
             </Badge>
           </div>
           <div className="post-description">
-            <p>
-              <h4>{postData.user_name}</h4> {postData.content}
-            </p>
+            <span>{postData.user_name}</span>
+            <p>{postData.content}</p>
           </div>
 
           <div className="post-comments">
@@ -101,10 +101,9 @@ function Post({ postData }) {
             <div className="post-add-comment-write">
               <Avatar src={user?.data?.imageUrl} />
               <input
+                ref={commentInput}
                 type="text"
                 placeholder="Add a comment..."
-                onChange={(e) => setCommentValue(e.target.value)}
-                value={commentValue}
               />
             </div>
             <div className="post-add-comment-submit">

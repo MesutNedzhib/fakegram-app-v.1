@@ -7,6 +7,10 @@
   display: flex;
   align-items: center;
   margin-bottom: 5px;
+  span {
+    font-weight: bold;
+    margin-right: 5px;
+  }
   .MuiAvatar-root {
     width: 25px;
     height: 25px;

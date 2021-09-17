@@ -31,7 +31,7 @@ function Navbar() {
           <Avatar
             src={user?.data?.imageUrl}
             style={{ width: "20px", height: "20px" }}
-            onClick={() => history.push(`/${user._id}/hp`)}
+            onClick={() => history.push(`/${user?.data?._id}/ps`)}
           />
           <ExitToAppIcon onClick={() => logout()} />
         </div>

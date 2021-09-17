@@ -47,9 +47,10 @@
 
   .post-description {
     padding: 5px 10px;
-    // padding-top: 0;
-    h4 {
-      display: inline-block;
+    display: flex;
+    span {
+      font-weight: bold;
+      margin-right: 5px;
     }
   }
 

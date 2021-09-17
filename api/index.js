@@ -33,7 +33,7 @@ app.use(customErrorHandler);
 app.use(express.static(path.join(__dirname, "public")));
 
 // Connect Socket
-connectSocket();
+// connectSocket();
 
 app.get("/", (req, res) => {
   res.send("Server is ready");

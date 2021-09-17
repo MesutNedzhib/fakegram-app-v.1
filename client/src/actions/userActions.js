@@ -69,14 +69,17 @@ export const userLogout = () => (dispatch) => {
   localStorage.removeItem("user");
 };
 
-export const getRandomSuggUsers = (_userId) => async (dispatch) => {
+export const getRandomSuggestedUsers = (accessToken) => async (dispatch) => {
   dispatch({
     type: GET_RANDOM_USERS_REQUEST,
   });
   try {
-    const { data } = await axios.post("/api/user/get-users", {
-      data: { _userId },
+    const { data } = await axios.get("/api/user/random-suggested-users", {
+      headers: {
+        Authorization: `Bearer: ${accessToken}`,
+      },
     });
+
     dispatch({
       type: GET_RANDOM_USERS_SUCCESS,
       payload: data.data,
@@ -87,20 +90,46 @@ export const getRandomSuggUsers = (_userId) => async (dispatch) => {
 };
 
 export const setFollow =
-  ({ _userId, _currentUserId }) =>
+  ({ accessToken, id }) =>
   async (dispatch) => {
     dispatch({
       type: SET_FOLLOW_REQUEST,
     });
     try {
-      const { data } = await axios.post("/api/user/set-follow", {
-        data: { _userId, _currentUserId },
+      const { data } = await axios.get(`/api/user/${id}/follow`, {
+        headers: {
+          Authorization: `Bearer: ${accessToken}`,
+        },
       });
-      if (data) {
-        dispatch({
-          type: SET_FOLLOW_SUCCESS,
-        });
-      }
+      console.log(data);
+      // if (data) {
+      //   dispatch({
+      //     type: SET_FOLLOW_SUCCESS,
+      //   });
+      // }
+    } catch (err) {
+      dispatch({ type: SET_FOLLOW_FAIL, payload: err.message });
+    }
+  };
+
+export const setUnFollow =
+  ({ accessToken, id }) =>
+  async (dispatch) => {
+    dispatch({
+      type: SET_FOLLOW_REQUEST,
+    });
+    try {
+      const { data } = await axios.get(`/api/user/${id}/unfollow`, {
+        headers: {
+          Authorization: `Bearer: ${accessToken}`,
+        },
+      });
+      console.log(data);
+      // if (data) {
+      //   dispatch({
+      //     type: SET_FOLLOW_SUCCESS,
+      //   });
+      // }
     } catch (err) {
       dispatch({ type: SET_FOLLOW_FAIL, payload: err.message });
     }
