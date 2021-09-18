@@ -1,4 +1,3 @@
-import "./App.css";
 import Navbar from "./components/Navbar/Navbar";
 import HomeScreen from "./screens/HomeScreen/HomeScreen";
 import LoginScreen from "./screens/LoginScreen/LoginScreen";
