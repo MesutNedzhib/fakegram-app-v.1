@@ -1,22 +1,38 @@
 .homeScreen {
-  padding-top: 70px;
+  padding-top: 57px;
   padding-bottom: 50px;
 }
 .homeScreen-container {
   max-width: 940px;
   display: grid;
   grid-template-columns: 600px 300px;
+  grid-template-areas: "left right";
   margin: auto;
   grid-column-gap: 40px;
+
   @media (max-width: 480px) {
     grid-template-columns: 1fr;
+    grid-column-gap: 0;
+
+    .posts-side {
+      margin-top: 210px;
+    }
 
     .suggestions-side {
-      display: none;
+      width: 100%;
+      position: absolute;
+      display: flex;
+      overflow: hidden;
+      overflow-y: hidden;
+      overflow-x: auto;
     }
   }
 }
 .posts-side {
   display: grid;
   grid-row-gap: 20px;
+  grid-area: left;
+}
+.suggestions-side {
+  grid-area: right;
 }

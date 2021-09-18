@@ -2,22 +2,26 @@ const expressAsyncHandler = require("express-async-handler");
 const User = require("../models/User");
 const CustomError = require("../helpers/error/CustomError");
 
-const getSingleUser = expressAsyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-  const user = await User.findById(id).populate("posts");
-
-  res.status(200).json({
-    success: true,
-    data: user,
-  });
-});
-
 const getAllUsers = expressAsyncHandler(async (req, res, next) => {
   const users = await User.find();
 
   res.status(200).json({
     success: true,
     data: users,
+  });
+});
+
+const getSingleUser = expressAsyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const user = await User.findById(id).populate("posts");
+
+  user.posts.sort((x, y) => {
+    return new Date(y.createdAt) - new Date(x.createdAt);
+  });
+
+  res.status(200).json({
+    success: true,
+    data: user,
   });
 });
 
@@ -71,23 +75,13 @@ const setUnfollow = expressAsyncHandler(async (req, res, next) => {
 });
 
 const getRandomSuggestedUsers = expressAsyncHandler(async (req, res, next) => {
-  let users = await User.find().select("name imageUrl followers");
+  let users = await User.find().select("name email imageUrl followers");
 
   users = users.filter((x) => x._id != req.user.id);
 
-  let backUsers = [];
-  if (users.length > 0) {
-    for (let i = 0; i < users.length; i++) {
-      const randomIndex = Math.floor(Math.random() * users.length);
-      if (!backUsers.includes(randomIndex)) {
-        backUsers.push(users[randomIndex]);
-      }
-    }
-  }
-
   res.status(200).json({
     success: true,
-    data: backUsers,
+    data: users,
   });
 });
 

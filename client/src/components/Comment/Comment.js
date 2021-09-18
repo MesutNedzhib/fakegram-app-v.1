@@ -1,5 +1,5 @@
 import { Avatar } from "@material-ui/core";
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import "./Comment.scss";
 import * as timeago from "timeago.js";
 import { useHistory } from "react-router-dom";

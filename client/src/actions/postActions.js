@@ -3,7 +3,7 @@ import axios from "axios";
 export const createPost =
   ({ accessToken, formData }) =>
   async () => {
-    const { data } = await axios
+    await axios
       .post("/api/post", formData, {
         headers: {
           Authorization: `Bearer: ${accessToken}`,

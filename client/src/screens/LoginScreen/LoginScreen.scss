@@ -5,15 +5,19 @@
     padding-top: 15%;
     color: orchid;
     color: purple;
-    font-family: "Allison", cursive;
-    font-size: 96px;
+    // font-family: "Allison", cursive;
+    font-size: 78px;
     span {
       color: orange;
     }
   }
   button {
-    margin-top: 150px;
+    margin-top: 80px;
     width: 30%;
     justify-content: center;
+
+    @media (max-width: 480px) {
+      width: 60%;
+    }
   }
 }

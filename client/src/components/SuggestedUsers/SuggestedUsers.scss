@@ -1,12 +1,49 @@
+.suggestedestedUsers {
+  @media (max-width: 480px) {
+    padding: 10px 0;
+
+    &:last-child {
+      padding-right: 10px;
+    }
+  }
+}
 .suggested-user {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 5px;
 
+  @media (max-width: 480px) {
+    flex-direction: column;
+    background-color: white;
+    border: 1px solid rgb(228, 228, 228);
+    border-radius: 2px;
+    margin-left: 10px;
+    padding: 5px;
+    padding-bottom: 10px;
+    width: 120px;
+    height: 170px;
+  }
+
   .suggested-user-info {
     display: flex;
     align-items: center;
+
+    @media (max-width: 480px) {
+      flex-direction: column;
+
+      h4 {
+        margin-top: 10px;
+        padding: 0 5px;
+        text-align: center;
+      }
+
+      .MuiAvatar-root {
+        margin-top: 10px !important;
+        width: 60px !important;
+        height: 60px !important;
+      }
+    }
 
     .MuiAvatar-root {
       width: 30px;
@@ -17,6 +54,11 @@
 
   .suggested-user-follow-btn {
     margin-left: 20px;
+    @media (max-width: 480px) {
+      margin-left: 0;
+      margin-top: 10px;
+    }
+
     button {
       color: blue;
       font-size: 14px !important;

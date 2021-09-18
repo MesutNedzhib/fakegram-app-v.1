@@ -1,17 +1,13 @@
 import React, { useState } from "react";
 import "./CreatePost.scss";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import CloseIcon from "@material-ui/icons/Close";
 import ImageUpload from "image-upload-react";
 import "image-upload-react/dist/index.css";
-import { imageFileUpload } from "../../actions/userActions";
-import { createPost } from "../../actions/postActions";
 import { Button } from "@material-ui/core";
 import axios from "axios";
 
 function CreatePost({ setCreatePost }) {
-  const dispatch = useDispatch();
-
   const user = useSelector((state) => state.user.user);
 
   const [imageSrc, setImageSrc] = useState();

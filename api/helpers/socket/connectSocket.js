@@ -9,9 +9,26 @@ const io = require("socket.io")(8900, {
 });
 
 let currentPosts = [];
-let currentSuggUsers = [];
+let currentSuggestedUsers = [];
 
 const connectSocket = () => {
+  io.on("connection", (socket) => {
+    console.log("a user connected", socket.id);
+
+    socket.on("addPosts", (posts) => {
+      currentPosts = posts;
+    });
+
+    socket.on("addSuggestedUsers", (suggestedUsers) => {
+      currentSuggestedUsers = suggestedUsers;
+    });
+
+    socket.on("disconnect", () => {
+      console.log("a user disconnected", socket.id);
+    });
+  });
+
+  // Watch MongoDB collections when have change
   connection.once("open", () => {
     const postCollection = connection
       .collection("posts")
@@ -106,31 +123,15 @@ const connectSocket = () => {
             name: change.fullDocument.name,
           };
 
-          // for (let user of currentSuggUsers) {
-          //   if (user._id == updatedUser._id) {
-          //     user.followers = updatedUser.followers;
-          //   }
-          // }
+          for (let user of currentSuggestedUsers) {
+            if (user._id == updatedUser._id) {
+              user.followers = updatedUser.followers;
+            }
+          }
 
-          io.emit("newSuggUsers", updatedUser);
+          io.emit("newSuggestedUsers", currentSuggestedUsers);
           break;
       }
-    });
-  });
-
-  io.on("connection", (socket) => {
-    console.log("a user connected", socket.id);
-
-    socket.on("addPosts", (posts) => {
-      currentPosts = posts;
-    });
-
-    socket.on("addSuggUsers", (suggUsers) => {
-      currentSuggUsers = suggUsers;
-    });
-
-    socket.on("disconnect", () => {
-      console.log("a user disconnected", socket.id);
     });
   });
 };

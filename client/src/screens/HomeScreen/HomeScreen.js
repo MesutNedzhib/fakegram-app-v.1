@@ -5,11 +5,7 @@ import Post from "../../components/Post/Post";
 import "./HomeScreen.scss";
 import LoadingBox from "../../components/LoadingBox/LoadingBox";
 import MessageBox from "../../components/MessageBox/MessageBox";
-import { getUserPosts } from "../../actions/postActions";
-import { GET_USER_POSTS_SUCCESS } from "../../constants/postConstants";
-import { getRandomSuggestedUsers } from "../../actions/userActions";
 import SuggestedUsers from "../../components/SuggestedUsers/SuggestedUsers";
-import { GET_RANDOM_USERS_SUCCESS } from "../../constants/userConstants";
 import { io } from "socket.io-client";
 import axios from "axios";
 
@@ -20,19 +16,15 @@ function HomeScreen() {
   const socket = useRef();
 
   const { user } = useSelector((state) => state.user);
-  // let { suggUsers } = useSelector((state) => state.suggUsers);
-  // const { posts } = useSelector((state) => state.posts);
+
   const [posts, setPosts] = useState(null);
+  const [suggestedUsers, setSuggestedUsers] = useState(null);
 
   useEffect(() => {
     if (!user) {
       history.push("/auth");
     } else {
-      // if (!suggUsers) {
-      //   dispatch(getRandomSuggestedUsers(user?.access_token));
-      // }
-
-      async function fetchData() {
+      async function fetchUserPosts() {
         await axios
           .get("/api/post/get-user-posts", {
             headers: {
@@ -49,11 +41,34 @@ function HomeScreen() {
             }
           });
       }
+
+      async function fetchSuggestedUsers() {
+        await axios
+          .get("/api/user/random-suggested-users", {
+            headers: {
+              Authorization: `Bearer: ${user?.access_token}`,
+            },
+          })
+          .then(function (res) {
+            setSuggestedUsers(res.data.data);
+          })
+          .catch(function (error) {
+            console.log(error.response.statusText);
+            if (error.response.status === 401) {
+              localStorage.removeItem("user");
+              window.location = "/auth";
+            }
+          });
+      }
+
       if (!posts) {
-        fetchData();
+        fetchUserPosts();
+      }
+      if (!suggestedUsers) {
+        fetchSuggestedUsers();
       }
     }
-  }, [user, history, dispatch, posts]);
+  }, [user, history, dispatch, posts, suggestedUsers]);
 
   useEffect(() => {
     socket.current = io("ws://localhost:8900");
@@ -61,6 +76,8 @@ function HomeScreen() {
 
   useEffect(() => {
     socket.current.emit("addPosts", posts);
+
+    socket.current.emit("addSuggestedUsers", suggestedUsers);
 
     socket.current.on("newPost", (newPost) => {
       setPosts(newPost);
@@ -70,6 +87,9 @@ function HomeScreen() {
     });
     socket.current.on("newComment", (newComment) => {
       setPosts(newComment);
+    });
+    socket.current.on("newSuggestedUsers", (suggestedUsers) => {
+      setSuggestedUsers(suggestedUsers);
     });
   });
 
@@ -84,14 +104,14 @@ function HomeScreen() {
             posts?.map((item, index) => <Post key={index} postData={item} />)
           )}
         </div>
-        {/* <div className="suggestions-side">
-          {!suggUsers ? <LoadingBox /> : ""}
-          {suggUsers
-            ? suggUsers?.map((item, index) => (
+        <div className="suggestions-side">
+          {!suggestedUsers ? <LoadingBox /> : ""}
+          {suggestedUsers
+            ? suggestedUsers?.map((item, index) => (
                 <SuggestedUsers key={index} data={item} />
               ))
             : ""}
-        </div> */}
+        </div>
       </div>
     </div>
   );

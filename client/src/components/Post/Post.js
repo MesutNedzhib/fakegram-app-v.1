@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import "./Post.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { addCommentToPost, setLikeToPost } from "../../actions/postActions";
