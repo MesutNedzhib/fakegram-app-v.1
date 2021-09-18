@@ -59,10 +59,10 @@ function ProfileScreen() {
                   <div className="profileScreen-user-post-hover">
                     <span>
                       <FavoriteIcon />
-                      {item.likes.length}
+                      {item.likeCount}
                     </span>
                     <span>
-                      <ChatBubbleOutlineIcon /> {item.comments.length}
+                      <ChatBubbleOutlineIcon /> {item.commentCount}
                     </span>
                   </div>
                 </div>
