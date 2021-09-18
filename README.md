@@ -1,5 +1,5 @@
-# Laptop Shop E-LMAG
-Laptop Shop E-LMAG - is a web application built in the form of an online store where consumers can browse and buy products.
+# Fakegram
+Fakegram - is a web application similar of instagram where consumers can upload their pictures, comment and like on posts, follow and unfollow other consumers in REAL TIME.
 
 ![view-image-1](https://github.com/MesutNedzhib/fakegram-app-v.1/blob/master/client/public/png/desktopPluSmobile.png)
 
@@ -12,7 +12,7 @@ v.1 - Demo
    - `npm install`
    - `npm run import`
    - `npm start`
-4. Open the new CLI in the main folder **[laptop-shop]** and go to **client** directory using command `cd client`.
+4. Open the new CLI in the main folder **[fakegram-app]** and go to **client** directory using command `cd client`.
 5. Run the following commands for the **client** directory:
    - `npm install`
    - `npm start`
@@ -20,25 +20,32 @@ v.1 - Demo
 
 ## Features
 1. Api
-   - Get all products
-     - Search by name
-     - Pagiantion
-   - Get single product
-     - Search by id
-   - Get products by multiple conditions filter
+   - Authorization
+     - Login
+     - Logout
+   - User
+     - Get all users
+     - Get single user
+     - Set follow
+     - Set unfollow
+     - Get suggested users
+   - Post
+     - Create post
+     - Get all posts
+     - Get single post
+     - Like-unlike post
+     - Get user posts
+   - Comment
+     - Add comment
+     - Get all comments by post
 2. Client
-   - Add item to cart
-   - Remove item from cart
-   - Change cart item quantity
-   - Seacrh item/s
-   - Sort items
-   - Filter items
+   - Google login authorization
+   - 
+     
    
 ## Future Features
-- Creation of authorization functions
-- Creation of admin functionalities and dashboard
-- Creation of checkout screen 
-- Implement a stripe 
+- Create a chat component and functions to it
+- Create a search component and functions to it
 - etc ...
 
 ## Dependencies
@@ -48,16 +55,21 @@ v.1 - Demo
    - Dotenv
    - Nodemon
    - Express Async Handler
+   - Json Web Token
+   - Multer 
    - Mongoose
+   - MongoDB
+   - Socket IO
 2. Client:
    - React
    - Redux
    - React Redux
    - Redux Thunk
    - React Router Dom
-   - React Responsive Carousel
-   - React Device Detect
-   - React Currency Format
+   - React Google Login
+   - Image Upload React
+   - Socket IO Client
+   - Timeago JS
    - Axios
    - Material UI
    - SASS
