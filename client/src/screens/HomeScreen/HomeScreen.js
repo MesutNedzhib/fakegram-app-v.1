@@ -97,20 +97,24 @@ function HomeScreen() {
     <div className="homeScreen">
       <div className="homeScreen-container">
         <div className="posts-side">
-          {!posts ? <LoadingBox /> : ""}
-          {posts?.length === 0 ? (
+          {!posts ? (
+            <LoadingBox />
+          ) : posts?.length === 0 ? (
             <MessageBox message={"Not Posts Yet"} />
           ) : (
             posts?.map((item, index) => <Post key={index} postData={item} />)
           )}
         </div>
         <div className="suggestions-side">
-          {!suggestedUsers ? <LoadingBox /> : ""}
-          {suggestedUsers
-            ? suggestedUsers?.map((item, index) => (
-                <SuggestedUsers key={index} data={item} />
-              ))
-            : ""}
+          {!suggestedUsers ? (
+            <LoadingBox />
+          ) : suggestedUsers?.length === 0 ? (
+            <MessageBox message={"Not Suggested Users Yet"} />
+          ) : (
+            suggestedUsers?.map((item, index) => (
+              <SuggestedUsers key={index} data={item} />
+            ))
+          )}
         </div>
       </div>
     </div>
