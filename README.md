@@ -19,7 +19,10 @@ v.1 - Demo
 6. Enjoy :)
 
 ## Features
-1. Api
+The application is based on the three-tier architecture of the MERN stack, which consists of a client side, a server side, and a database.
+The MERN stack consists of MongoDB, Express JS, React JS and Node JS.
+Addition to app is selected Socket IO, which gives the opportunity for bidirectional communication between client and server in real time.
+The application has the following functionalities:
    - Authorization
      - Login
      - Logout
@@ -38,9 +41,6 @@ v.1 - Demo
    - Comment
      - Add comment
      - Get all comments by post
-2. Client
-   - Google login authorization
-   - 
      
    
 ## Future Features
